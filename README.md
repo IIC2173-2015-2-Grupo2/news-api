@@ -1,4 +1,5 @@
 # News-API
+[![Build Status](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api.svg)](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api)
 
 ## Getting Started
 
