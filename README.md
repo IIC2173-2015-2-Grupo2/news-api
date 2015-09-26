@@ -24,6 +24,15 @@ $ cd $GOPATH/src/github.com/IIC2173-2015-2-Grupo2/news-api/
 
 ### Local
 
+Setup database
+```sh
+# Example values
+export NEO4JHOST="192.168.99.100"
+export NEO4JPORT="7474"
+export NEO4USER="neo4j"
+export NEO4PASSWORD="neo4j"
+```
+
 Build and run the project locally using:
 ```sh
 $ make start
