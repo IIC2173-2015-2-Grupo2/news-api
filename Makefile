@@ -21,7 +21,6 @@ clean:
 
 # Build binary
 build:
-	make clean
 	go build
 
 # Start webserver
