@@ -12,6 +12,7 @@ $ export PATH=$PATH:$GOPATH/bin
 
 Get this repository using `go`:
 ```sh
+$ go get github.com/gin-gonic/gin
 $ go get github.com/IIC2173-2015-2-Grupo2/news-api
 
 # Project directory

@@ -7,6 +7,14 @@ SERVERNAME = $(NAME)-server
 # Binary name
 EXEC = ./$(NAME)
 
+get-deps:
+	go get github.com/gin-gonic/gin
+
+
+###############
+# LOCAL
+###############
+
 # Remove output
 clean:
 	rm $(EXEC)
@@ -24,6 +32,7 @@ run:
 build-run:
 	make build
 	make run
+
 
 ###############
 # DOCKER
