@@ -24,9 +24,9 @@ $ cd $GOPATH/src/github.com/IIC2173-2015-2-Grupo2/news-api/
 
 ### Local
 
-Run the project locally using:
+Build and run the project locally using:
 ```sh
-$ make
+$ make start
 ```
 
 ### [Docker](https://www.docker.com/)

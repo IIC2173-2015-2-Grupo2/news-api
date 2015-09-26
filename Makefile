@@ -1,4 +1,4 @@
-default: buildrun
+default: build
 
 # App name
 NAME = news-api
@@ -29,7 +29,7 @@ run:
 	$(EXEC)
 
 # Build and start webserver
-build-run:
+start:
 	make build
 	make run
 
