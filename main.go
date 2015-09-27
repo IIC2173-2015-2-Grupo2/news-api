@@ -1,15 +1,35 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
+
+	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
 )
 
-func connect(user, password, host, port string) *neoism.Database {
+var db *neoism.Database
+var router *gin.Engine
+
+func main() {
+	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
+		db = Connect(
+			os.Getenv("NEO4USER"),
+			os.Getenv("NEO4PASSWORD"),
+			os.Getenv("NEO4JHOST"),
+			os.Getenv("NEO4JPORT"),
+		)
+	}
+	router = Router()
+	router.Run(":8000")
+}
+
+/*
+Connect to database
+*/
+func Connect(user, password, host, port string) *neoism.Database {
 	uri := "http://" + user + ":" + password + "@" + host + ":" + port + "/db/data"
 	db, err := neoism.Connect(uri)
 	if err != nil {
@@ -18,16 +38,26 @@ func connect(user, password, host, port string) *neoism.Database {
 	return db
 }
 
+/*
+Router for routing HTPP
+*/
+func Router() *gin.Engine {
+	// Controllers
+	newsController := controllers.NewsController{db}
+
+	// Routing
+	router := gin.Default()
+	v1 := router.Group("/api/v1")
+	{
+		v1.GET("/news", newsController.Index)
+		v1.GET("/news/:id", newsController.Show)
+	}
+	router.GET("/", index)
+
+	return router
+}
+
 func index(c *gin.Context) {
 	content := gin.H{"Hello": "World"}
 	c.JSON(200, content)
-}
-
-func main() {
-	db := connect(os.Getenv("NEO4USER"), os.Getenv("NEO4PASSWORD"), os.Getenv("NEO4JHOST"), os.Getenv("NEO4JPORT"))
-	fmt.Println("Connected to:", db.Url)
-
-	app := gin.Default()
-	app.GET("/", index)
-	app.Run(":8000")
 }
