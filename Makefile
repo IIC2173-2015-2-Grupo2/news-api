@@ -4,11 +4,16 @@ default: build
 NAME = news-api
 SERVERNAME = $(NAME)-server
 
+# Flags
+DBHOST = db-host
+DBPORT = db-port
+
 # Binary name
 EXEC = ./$(NAME)
 
 get-deps:
 	go get github.com/gin-gonic/gin
+	go get github.com/jmcvetta/neoism
 
 
 ###############
@@ -25,7 +30,7 @@ build:
 
 # Start webserver
 run:
-	$(EXEC)
+	$(EXEC) -db-user=$(NEO4USER) -db-password=$(NEO4PASSWORD) -db-host=$(NEO4JHOST) -db-port=$(NEO4JPORT)
 
 # Build and start webserver
 start:
