@@ -1,7 +1,39 @@
 # News-API
 [![Build Status](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api.svg)](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api)
 
-## Getting Started
+## API Documentation
+
+### Objects
+
+#### `New`
+
+Describes a New.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | `string` | - |
+
+### API Usage
+
+#### `/news/:id`
+
+Returns the New associated with that `id`
+
+| Argument | Type | Description |
+|----------|------|-------------|
+| `short`  | `boolean` | Request a short version of the new |
+
+#### `/news/search`
+
+Search news with
+
+| Argument | Type | Description |
+|----------|------|-------------|
+| `text`   | `string` | Search coincidences on new's body |
+| `tags`   | `string[]`| - |
+
+
+## Development
 
 Install [Golang](https://golang.org/).
 
@@ -23,8 +55,6 @@ $ go get github.com/IIC2173-2015-2-Grupo2/news-api
 # Project directory
 $ cd $GOPATH/src/github.com/IIC2173-2015-2-Grupo2/news-api/
 ```
-
-## Development
 
 ### Local
 
