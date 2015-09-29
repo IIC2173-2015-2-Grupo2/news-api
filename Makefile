@@ -12,11 +12,7 @@ DBPORT = db-port
 EXEC = ./$(NAME)
 
 get-deps:
-	go get github.com/gin-gonic/gin
-	go get github.com/dgrijalva/jwt-go
-	go get github.com/gin-gonic/contrib
-	go get github.com/markbates/goth/gothic
-	go get github.com/jmcvetta/neoism
+	godep go install
 
 
 ###############
@@ -29,7 +25,7 @@ clean:
 
 # Build binary
 build:
-	go build
+	godep go build
 
 # Start webserver
 run:

@@ -1,0 +1,68 @@
+{
+	"ImportPath": "github.com/IIC2173-2015-2-Grupo2/news-api",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Comment": "v2.3.0-6-gf62f64e",
+			"Rev": "f62f64ea222e5e6d6d86421b5507b0862a3ebf7f"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/contrib/cors",
+			"Rev": "14f66d54cdb96059bafca98665bcc6d9df4951f2"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/contrib/jwt",
+			"Rev": "14f66d54cdb96059bafca98665bcc6d9df4951f2"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin",
+			"Comment": "v1.0rc1-148-g52fcc5d",
+			"Rev": "52fcc5dbf6e94df33ad313858fb94b713e9d1b4a"
+		},
+		{
+			"ImportPath": "github.com/jmcvetta/napping",
+			"Comment": "v2.1.1",
+			"Rev": "88d59de58478a2a0be4bf05884abcd56b8c63ad4"
+		},
+		{
+			"ImportPath": "github.com/jmcvetta/neoism",
+			"Rev": "eeddbeb504d6c0f411e083a85b312d6ab71c48b1"
+		},
+		{
+			"ImportPath": "github.com/jmcvetta/randutil",
+			"Rev": "2bb1b664bcff821e02b2a0644cd29c7e824d54f8"
+		},
+		{
+			"ImportPath": "github.com/kr/pretty",
+			"Comment": "go.weekly.2011-12-22-27-ge6ac2fc",
+			"Rev": "e6ac2fc51e89a3249e82157fa0bb7a18ef9dd5bb"
+		},
+		{
+			"ImportPath": "github.com/kr/text",
+			"Rev": "bb797dc4fb8320488f47bf11de07a733d7233e1f"
+		},
+		{
+			"ImportPath": "github.com/manucorporat/sse",
+			"Rev": "fe6ea2c8e398672518ef204bf0fbd9af858d0e15"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Rev": "40e4aedc8fabf8c23e040057540867186712faa5"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Comment": "v1.0-45-gbcd32dc",
+			"Rev": "bcd32dcc8b1e09b14f55703dcf891fdd82561143"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "03affa02f16950ea3188823456766ed60bfed9bb"
+		},
+		{
+			"ImportPath": "gopkg.in/bluesuncorp/validator.v5",
+			"Comment": "v5.12",
+			"Rev": "d5acf1dac43705f8bfbb71d878e290e2bed3950b"
+		}
+	]
+}
