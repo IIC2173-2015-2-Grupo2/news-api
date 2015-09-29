@@ -8,6 +8,7 @@ import (
 	"github.com/jmcvetta/neoism"
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
+	"github.com/IIC2173-2015-2-Grupo2/news-api/middleware"
 )
 
 var db *neoism.Database
@@ -22,7 +23,11 @@ func main() {
 			os.Getenv("NEO4JPORT"),
 		)
 	}
-	router = Router()
+
+	router = Router(
+		middleware.CORSMiddleware(),
+	)
+
 	router.Run(":8000")
 }
 
@@ -41,12 +46,14 @@ func Connect(user, password, host, port string) *neoism.Database {
 /*
 Router for routing HTPP
 */
-func Router() *gin.Engine {
+func Router(middleware ...gin.HandlerFunc) *gin.Engine {
 	// Controllers
 	newsController := controllers.NewsController{db}
 
 	// Routing
 	router := gin.Default()
+	router.Use(middleware...)
+
 	v1 := router.Group("/api/v1")
 	{
 		v1.GET("/news", newsController.Index)
