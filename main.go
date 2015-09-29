@@ -47,7 +47,7 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	secret := os.Getenv("SECRET_HASH")
 
 	// Controllers
-	newsController := controllers.NewsController{db}
+	newsController := controllers.NewsController{DB: db}
 
 	// Public API
 	public := router.Group("/api/v1")
