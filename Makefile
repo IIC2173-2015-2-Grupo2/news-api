@@ -31,6 +31,10 @@ build:
 run:
 	$(EXEC) -db-user=$(NEO4USER) -db-password=$(NEO4PASSWORD) -db-host=$(NEO4JHOST) -db-port=$(NEO4JPORT)
 
+test:
+	make build
+	godep go test -v
+
 # Build and start webserver
 start:
 	make build
