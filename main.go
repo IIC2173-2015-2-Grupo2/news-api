@@ -17,6 +17,7 @@ Start point
 func main() {
 	// Database setup
 	var db *neoism.Database
+	var err error
 	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
 		db = database.Connect(
 			os.Getenv("NEO4USER"),
@@ -24,6 +25,13 @@ func main() {
 			os.Getenv("NEO4JHOST"),
 			os.Getenv("NEO4JPORT"),
 		)
+	}else{
+		// db, _ = neoism.Connect("http://localhost:7474/db/data")
+		db, err = neoism.Connect("http://neo4j:12345678@localhost:7474/db/data")
+		print(err)
+// ://neo4j:password@server:7474/db/data
+		
+
 	}
 
 	// Router
@@ -47,7 +55,7 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	secret := os.Getenv("SECRET_HASH")
 
 	// Controllers
-	newsController := controllers.NewsController{db}
+	newsController := controllers.NewsController{DB: db}
 
 	// Public API
 	public := router.Group("/api/v1")
@@ -61,7 +69,7 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 			c.JSON(200, gin.H{"token": token})
 		}
 	})
-
+	public.GET("/news", newsController.PublicIndex)
 	// Private API
 	private := router.Group("/api/v1/private")
 	private.Use(middleware.AuthMiddleware(secret))

@@ -20,6 +20,17 @@ func (n *NewsController) Index(c *gin.Context) {
 }
 
 /*
+For test
+*/
+func (n *NewsController) PublicIndex(c *gin.Context) {
+
+	n.DB.CreateNode(neoism.Props{"l": "CHAO"})
+	c.JSON(200, gin.H{"Controller": "News", "Action": "Index"})
+
+	// println(node)
+}
+
+/*
 Show specific new
 */
 func (n *NewsController) Show(c *gin.Context) {
@@ -48,3 +59,6 @@ func (n *NewsController) Show(c *gin.Context) {
 			}
 	*/
 }
+
+
+
