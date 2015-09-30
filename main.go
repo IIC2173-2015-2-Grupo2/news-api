@@ -8,56 +8,80 @@ import (
 	"github.com/jmcvetta/neoism"
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
+	"github.com/IIC2173-2015-2-Grupo2/news-api/database"
+	"github.com/IIC2173-2015-2-Grupo2/news-api/middleware"
 )
 
-var db *neoism.Database
-var router *gin.Engine
+const (
+	port = ":8000"
+)
 
 func main() {
+	// Database setup
+	var db *neoism.Database
 	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
-		db = Connect(
+		if connected, err := database.Connect(
 			os.Getenv("NEO4USER"),
 			os.Getenv("NEO4PASSWORD"),
 			os.Getenv("NEO4JHOST"),
 			os.Getenv("NEO4JPORT"),
-		)
+		); err != nil {
+			log.Fatal(err)
+		} else {
+			db = connected
+		}
 	}
-	router = Router()
-	router.Run(":8000")
+	Server(db).Run(port)
 }
 
 /*
-Connect to database
+Server server
 */
-func Connect(user, password, host, port string) *neoism.Database {
-	uri := "http://" + user + ":" + password + "@" + host + ":" + port + "/db/data"
-	db, err := neoism.Connect(uri)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return db
-}
+func Server(db *neoism.Database) *gin.Engine {
 
-/*
-Router for routing HTPP
-*/
-func Router() *gin.Engine {
-	// Controllers
-	newsController := controllers.NewsController{db}
-
-	// Routing
+	// Router
 	router := gin.Default()
-	v1 := router.Group("/api/v1")
-	{
-		v1.GET("/news", newsController.Index)
-		v1.GET("/news/:id", newsController.Show)
-	}
-	router.GET("/", index)
+
+	// Middleware
+	router.Use(middleware.CORS())
+	router.Use(middleware.GZIP())
+
+	// Welcome
+	router.GET("/", func(c *gin.Context) {
+		c.Redirect(301, "/api/v1")
+	})
+
+	// Configure API v1
+	apiv1(router, db)
 
 	return router
 }
 
-func index(c *gin.Context) {
-	content := gin.H{"Hello": "World"}
-	c.JSON(200, content)
+func apiv1(router *gin.Engine, db *neoism.Database) {
+	secret := os.Getenv("SECRET_HASH")
+
+	// Controllers --------------------------------------------------------------
+	newsController := controllers.NewsController{DB: db}
+	sessionController := controllers.SessionController{DB: db}
+	// --------------------------------------------------------------------------
+
+	// Public API ---------------------------------------------------------------
+	public := router.Group("/api/v1")
+	public.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "on"})
+	})
+	// --------------------------------------------------------------------------
+
+	// Auth API
+	auth := router.Group("/api/v1/auth")
+	auth.POST("/token", sessionController.Token)
+	// --------------------------------------------------------------------------
+
+	// Private API --------------------------------------------------------------
+	private := router.Group("/api/v1/private")
+	private.Use(middleware.JWTAuth(secret))
+
+	private.GET("/news", newsController.Index)
+	private.GET("/news/:id", newsController.Show)
+	// --------------------------------------------------------------------------
 }
