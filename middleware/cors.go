@@ -8,17 +8,17 @@ import (
 )
 
 /*
-CORSMiddleware allow CORS.
+CORS allow CORS.
 See: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 */
-func CORSMiddleware() gin.HandlerFunc {
+func CORS() gin.HandlerFunc {
 	return cors.New(cors.Config{
 		AbortOnError:    false,
 		AllowAllOrigins: true,
 		// AllowedOrigins:   []string{"*"}, // TODO: set GUI url
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "HEAD"},
 		AllowedHeaders:   []string{"Content-Type"},
-		AllowCredentials: false, // TODO: add auth
+		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	})
 }

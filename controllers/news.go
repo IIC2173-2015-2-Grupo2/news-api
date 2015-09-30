@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
 )
@@ -16,7 +17,8 @@ type NewsController struct {
 Index show list
 */
 func (n *NewsController) Index(c *gin.Context) {
-	c.JSON(200, gin.H{"Controller": "News", "Action": "Index"})
+	new := models.New{Title: ""}
+	c.JSON(200, new)
 }
 
 /*
@@ -29,7 +31,7 @@ func (n *NewsController) Show(c *gin.Context) {
 		Tag  string
 		Date string
 	}
-	msg.ID = c.Params.ByName("id")
+	msg.ID = c.Param("id")
 	msg.Tag = c.Query("tag") // default: ""
 	msg.Date = c.DefaultQuery("date", "2015-05-25")
 

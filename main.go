@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -18,17 +19,21 @@ func main() {
 	// Database setup
 	var db *neoism.Database
 	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
-		db = database.Connect(
+		if connected, err := database.Connect(
 			os.Getenv("NEO4USER"),
 			os.Getenv("NEO4PASSWORD"),
 			os.Getenv("NEO4JHOST"),
 			os.Getenv("NEO4JPORT"),
-		)
+		); err != nil {
+			log.Fatal(err)
+		} else {
+			db = connected
+		}
 	}
 
 	// Router
 	router := gin.Default()
-	router.Use(middleware.CORSMiddleware())
+	router.Use(middleware.CORS())
 
 	// Welcome
 	router.GET("/", func(c *gin.Context) {
@@ -43,29 +48,28 @@ func main() {
 }
 
 func apiv1(router *gin.Engine, db *neoism.Database) {
-	// Secret hash
 	secret := os.Getenv("SECRET_HASH")
 
-	// Controllers
+	// Controllers --------------------------------------------------------------
 	newsController := controllers.NewsController{DB: db}
+	sessionController := controllers.SessionController{DB: db}
+	// --------------------------------------------------------------------------
 
-	// Public API
+	// Public API ---------------------------------------------------------------
 	public := router.Group("/api/v1")
-	public.GET("/auth", func(c *gin.Context) {
-		claims := map[string]interface{}{
-			"ID": "Patiwi",
-		}
-		if token, err := middleware.Token("", claims); err != nil {
-			c.JSON(500, gin.H{"error": err})
-		} else {
-			c.JSON(200, gin.H{"token": token})
-		}
-	})
+	public.GET("/hello")
+	// --------------------------------------------------------------------------
 
-	// Private API
+	// Auth API
+	auth := router.Group("/api/v1/auth")
+	auth.POST("/token", sessionController.Token)
+	// --------------------------------------------------------------------------
+
+	// Private API --------------------------------------------------------------
 	private := router.Group("/api/v1/private")
-	private.Use(middleware.AuthMiddleware(secret))
+	private.Use(middleware.JWTAuth(secret))
 
 	private.GET("/news", newsController.Index)
 	private.GET("/news/:id", newsController.Show)
+	// --------------------------------------------------------------------------
 }

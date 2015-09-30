@@ -1,7 +1,7 @@
 package database
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/jmcvetta/neoism"
 )
@@ -9,11 +9,8 @@ import (
 /*
 Connect to database
 */
-func Connect(user, password, host, port string) *neoism.Database {
+func Connect(user, password, host, port string) (*neoism.Database, error) {
 	uri := "http://" + user + ":" + password + "@" + host + ":" + port + "/db/data"
-	db, err := neoism.Connect(uri)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return db
+	fmt.Println(uri)
+	return neoism.Connect(uri)
 }

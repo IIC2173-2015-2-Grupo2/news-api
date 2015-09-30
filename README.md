@@ -15,7 +15,7 @@ Describes a New.
 
 ### API Usage
 
-#### `/news/:id`
+#### `api/v1/news/:id`
 
 Returns the New associated with that `id`
 
@@ -23,7 +23,7 @@ Returns the New associated with that `id`
 |----------|------|-------------|
 | `short`  | `boolean` | Request a short version of the new |
 
-#### `/news/search`
+#### `api/v1/news/search`
 
 Search news with
 
