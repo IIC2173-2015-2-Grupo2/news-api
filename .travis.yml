@@ -2,5 +2,7 @@ language: go
 
 sudo: false
 
+script: godep go test
+
 go:
   - 1.5.1
