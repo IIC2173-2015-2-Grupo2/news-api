@@ -12,9 +12,10 @@ import (
 	"github.com/IIC2173-2015-2-Grupo2/news-api/middleware"
 )
 
-/*
-Start point
-*/
+const (
+	port = ":8000"
+)
+
 func main() {
 	// Database setup
 	var db *neoism.Database
@@ -30,21 +31,30 @@ func main() {
 			db = connected
 		}
 	}
+	Server(db).Run(port)
+}
+
+/*
+Server server
+*/
+func Server(db *neoism.Database) *gin.Engine {
 
 	// Router
 	router := gin.Default()
+
+	// Middleware
 	router.Use(middleware.CORS())
+	router.Use(middleware.GZIP())
 
 	// Welcome
 	router.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{"news-api": "working"})
+		c.Redirect(301, "/api/v1")
 	})
 
 	// Configure API v1
 	apiv1(router, db)
 
-	// Start
-	router.Run(":8000")
+	return router
 }
 
 func apiv1(router *gin.Engine, db *neoism.Database) {
@@ -57,7 +67,9 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 
 	// Public API ---------------------------------------------------------------
 	public := router.Group("/api/v1")
-	public.GET("/hello")
+	public.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "on"})
+	})
 	// --------------------------------------------------------------------------
 
 	// Auth API
