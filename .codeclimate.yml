@@ -6,7 +6,7 @@ engines:
 
 ratings:
   paths:
-    - "./**/*.go"
+  - "./**/*.go"
 
 exclude_paths:
-- Godeps/**/*
+- "Godeps/**/*"
