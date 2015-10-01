@@ -29,7 +29,7 @@ build:
 
 # Start webserver
 run:
-	$(EXEC) -db-user=$(NEO4USER) -db-password=$(NEO4PASSWORD) -db-host=$(NEO4JHOST) -db-port=$(NEO4JPORT)
+	$(EXEC) -db-user=$(NEO4J_USER) -db-password=$(NEO4J_PASS) -db-host=$(NEO4J_HOST) -db-port=$(NEO4J_PORT)
 
 test:
 	make build

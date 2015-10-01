@@ -21,10 +21,10 @@ func main() {
 	var db *neoism.Database
 	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
 		if connected, err := database.Connect(
-			os.Getenv("NEO4USER"),
-			os.Getenv("NEO4PASSWORD"),
-			os.Getenv("NEO4JHOST"),
-			os.Getenv("NEO4JPORT"),
+			os.Getenv("NEO4J_USER"),
+			os.Getenv("NEO4J_PASS"),
+			os.Getenv("NEO4J_HOST"),
+			os.Getenv("NEO4J_PORT"),
 		); err != nil {
 			log.Fatal(err)
 		} else {
@@ -67,13 +67,15 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 
 	// Public API ---------------------------------------------------------------
 	public := router.Group("/api/v1")
+
 	public.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "on"})
 	})
 	// --------------------------------------------------------------------------
 
-	// Auth API
+	// Auth API -----------------------------------------------------------------
 	auth := router.Group("/api/v1/auth")
+
 	auth.POST("/token", sessionController.Token)
 	// --------------------------------------------------------------------------
 
