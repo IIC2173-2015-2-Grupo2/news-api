@@ -1,6 +1,8 @@
 //usr/bin/env go run $0 "$@"; exit
 package main
 
+
+// Remember change db connection. default is localhost
 // for run seed, put in yout shell:
 // chmod 744 script.go
 // ./script.go 
@@ -13,11 +15,52 @@ import (
   // "encoding/json"
 )
 
+
+
+func getOrCreateNode(db *neoism.Database, label string, key string, value string, props neoism.Props) (*neoism.Node){
+  res := []struct {
+      // `json:` tags matches column names in query
+      N neoism.Node 
+  }{}
+
+  
+  //MATCH (n:Tag { name: 'deporte' }) RETURN n
+  st := "MATCH (n:"+label+" { "+key+": '"+value+"' }) RETURN n"
+  println(st)
+
+   cq0 := neoism.CypherQuery{
+      // Use backticks for long statements - Cypher is whitespace indifferent
+      Statement:st,
+      Parameters: neoism.Props{},
+      Result:     &res,
+  }
+
+  db.Cypher(&cq0)
+  
+  // println("largo")
+  // println(len(res))
+  // tagName, err := n1.Property("name")
+  // println(tagName)
+  // println(err)
+
+  var node *neoism.Node
+
+  if(len(res)>0){// existe el tag
+    println("si")
+    node = &res[0].N
+    node.Db = db
+  }else{
+    println("no")
+    node, _ = db.CreateNode(props)
+    node.AddLabel(label)
+  }
+
+  return node
+}
+
 func main() {
 
   
-
-
 
 
   // tags := ["juegos", "wii"]
@@ -55,8 +98,9 @@ func main() {
  
 
   var tags [2]string
-  var node *neoism.Node
   for _, row := range newsMatrix {
+
+    println("row")
 
     // element is the element from someSlice for where we are
     title := row[0]
@@ -67,43 +111,26 @@ func main() {
     provider := row[4]
 
 
-    node_, _:= db.CreateNode(neoism.Props{"url": url,"title": title, "summary": summary})
-    node = node_
-    node.AddLabel("NewsItem")
 
-    providerNode, _ := db.CreateNode(neoism.Props{"name": provider}) 
-    providerNode.AddLabel("NewsProvider")
+    newItem :=getOrCreateNode(db,"NewsItem","url",url, neoism.Props{"url": url,"name": title, "summary": summary})
+
+    providerNode := getOrCreateNode(db,"NewsProvider","name",provider,neoism.Props{"name": provider})
 
 
-    providerNode.Relate("posted", node.Id(), neoism.Props{})
-  }
+    providerNode.Relate("posted", newItem.Id(), neoism.Props{})
+  
+    for _, tag := range tags {
 
-  for _, tag := range tags {
+      tagNode := getOrCreateNode(db,"Tag","name",tag, neoism.Props{"name": tag})
 
-    // res := []struct {
-    //     // `json:` tags matches column names in query
-    //     A   string `json:"a.name"` 
-    // }{}
+      tagNode.Relate("is in ",newItem.Id(), neoism.Props{})
 
-    //  _ = neoism.CypherQuery{
-    //     // Use backticks for long statements - Cypher is whitespace indifferent
-    //     Statement: `
-    //         MATCH (a:Tag { name: {tag_} }) RETURN a.name
-    //     `,
-    //     Parameters: neoism.Props{"tag_": tag},
-    //     Result:     &res,
-    // }
+    }
 
-    // out, _ := json.Marshal(res[0])
-    // println("largo")
-    // println(len(res))
-
-    tagNode, _ := db.CreateNode(neoism.Props{"name": tag})
-    tagNode.AddLabel("Tag")
-
-    tagNode.Relate("is in ",node.Id(), neoism.Props{})
 
   }
+
+
 
 
 
