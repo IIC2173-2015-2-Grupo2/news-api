@@ -100,7 +100,7 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	}
 
 	private.GET("/news", newsController.Index)
-	private.GET("/news/search", newsController.Search)
+	private.GET("/search", newsController.Search)
 	private.GET("/news/:id", newsController.Show)
 	private.GET("/users", usersController.Index)
 	private.GET("/users/:id", usersController.Show)
