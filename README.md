@@ -63,6 +63,13 @@ export NEO4J_USER="neo4j"
 export NEO4J_PASS="neo4j"
 ```
 
+Setup other environment variables
+```sh
+export ENVIRONMENT="PRODUCTION"
+export SECRET_HASH="SECRET_HASH"
+export AUTH="ENABLE"
+```
+
 Build and run the project locally using:
 ```sh
 $ make start

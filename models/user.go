@@ -8,3 +8,8 @@ type User struct {
 	Email    string `json:"email"`
 	Password string
 }
+
+/*
+Users Multiple users
+*/
+type Users []*User

@@ -1,6 +1,10 @@
 package controllers
 
 import (
+	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
@@ -14,39 +18,65 @@ type NewsController struct {
 }
 
 /*
+GetNew returns the new with that id
+*/
+func (n *NewsController) GetNew(id int) (*models.New, error) {
+	var news []models.New
+	if err := n.DB.Cypher(&neoism.CypherQuery{
+		Statement: `MATCH (new:New)
+								WHERE ID(new) = {id}
+								RETURN new.title as title, new.url as url`,
+		Parameters: neoism.Props{"id": id},
+		Result:     &news,
+	}); err != nil {
+		return nil, err
+
+	} else if len(news) == 0 {
+		return nil, errors.New("not found")
+
+	} else {
+		return &news[0], nil
+	}
+}
+
+/*
+GetNews returns collection of news
+*/
+func (n *NewsController) GetNews() (*[]models.New, error) {
+	var news []models.New
+	if err := n.DB.Cypher(&neoism.CypherQuery{
+		Statement: `MATCH (new:New)
+								RETURN new.title as title, new.url as url`,
+		Result: &news,
+	}); err != nil {
+		return nil, err
+	}
+	return &news, nil
+}
+
+/*
 Index show list
 */
 func (n *NewsController) Index(c *gin.Context) {
-	new := models.New{Title: ""}
-	c.JSON(200, new)
+	if news, err := n.GetNews(); err != nil {
+		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
+
+	} else {
+		c.JSON(http.StatusOK, gin.H{"news": news})
+	}
 }
 
 /*
 Show specific new
 */
 func (n *NewsController) Show(c *gin.Context) {
-	// Docs: https://github.com/gin-gonic/gin#xml-and-json-rendering
-	var msg struct {
-		ID   string
-		Tag  string
-		Date string
+	if id, err := strconv.Atoi(c.Param("id")); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	} else if new, err := n.GetNew(id); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+
+	} else {
+		c.JSON(http.StatusOK, gin.H{"new": new})
 	}
-	msg.ID = c.Param("id")
-	msg.Tag = c.Query("tag") // default: ""
-	msg.Date = c.DefaultQuery("date", "2015-05-25")
-
-	c.JSON(200, gin.H{"Controller": "News", "Action": "Show", "Message": msg})
-
-	/* http://localhost:8000/api/v1/news/1
-	 * Output:
-			{
-			  "Action": "Show",
-			  "Controller": "News",
-			  "Message": {
-			    "ID": "1",
-			    "Tag": "",
-			    "Date": "2015-05-25"
-			  }
-			}
-	*/
 }
