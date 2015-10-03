@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/IIC2173-2015-2-Grupo2/news-api/util"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
@@ -24,8 +26,8 @@ func (n *SessionController) Token(c *gin.Context) {
 	}
 
 	if token, err := util.Token("", claims); err != nil {
-		c.JSON(500, gin.H{"error": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	} else {
-		c.JSON(200, gin.H{"token": token})
+		c.JSON(http.StatusAccepted, gin.H{"token": token})
 	}
 }

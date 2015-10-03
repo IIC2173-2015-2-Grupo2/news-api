@@ -19,7 +19,7 @@ const (
 func main() {
 	// Database setup
 	var db *neoism.Database
-	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
+	if os.Getenv("NEO4J_HOST") != "" && os.Getenv("NEO4J_PORT") != "" {
 		if connected, err := database.Connect(
 			os.Getenv("NEO4J_USER"),
 			os.Getenv("NEO4J_PASS"),
@@ -31,6 +31,16 @@ func main() {
 			db = connected
 		}
 	}
+
+	// Setup environment
+	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
+		gin.SetMode(gin.ReleaseMode)
+	} else {
+		gin.SetMode(gin.DebugMode)
+		db.Session.Log = db != nil
+	}
+
+	// Start
 	Server(db).Run(port)
 }
 
@@ -81,7 +91,10 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 
 	// Private API --------------------------------------------------------------
 	private := router.Group("/api/v1/private")
-	private.Use(middleware.JWTAuth(secret))
+
+	if auth := os.Getenv("AUTH"); auth == "ENABLE" {
+		private.Use(middleware.JWTAuth(secret))
+	}
 
 	private.GET("/news", newsController.Index)
 	private.GET("/news/:id", newsController.Show)
