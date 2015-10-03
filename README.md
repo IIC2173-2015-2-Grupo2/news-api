@@ -12,8 +12,48 @@ Describes a New.
 | Field | Type | Description |
 |-------|------|-------------|
 | `title` | `string` | - |
+| `url` | `string` | - |
+
+#### `User`
+
+Describes a User.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | `string` | - |
+| `username` | `string` | Primary key of `users` |
+| `email` | `string` | - |
+| `password` | `string` | Only to current registered user |
 
 ### API Usage
+
+#### `api/v1/signup`
+
+Creates an account. This returns the account session token
+
+| POST Argument | Type | Description |
+|----------|------|-------------|
+| `name`  | `string`| - |
+| `username`  | `string`| - |
+| `email` | `string`| - |
+| `password`  | `string`| - |
+
+#### `api/v1/token`
+
+Re-new expired token
+
+| POST Argument | Type | Description |
+|----------|------|-------------|
+| `username`  | `string`| - |
+| `password`  | `string`| - |
+
+#### `api/v1/news`
+
+Returns the new's list
+
+| Argument | Type | Description |
+|----------|------|-------------|
+|          |      |             |
 
 #### `api/v1/news/:id`
 
@@ -21,7 +61,7 @@ Returns the New associated with that `id`
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `short`  | `boolean` | Request a short version of the new |
+|          |      |             |
 
 #### `api/v1/news/search`
 
@@ -29,8 +69,7 @@ Search news with
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `text`   | `string` | Search coincidences on new's body |
-| `tags`   | `string[]`| - |
+|          |      |             |
 
 
 ## Development

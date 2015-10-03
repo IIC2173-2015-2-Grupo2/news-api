@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -58,7 +59,7 @@ func Server(db *neoism.Database) *gin.Engine {
 
 	// Welcome
 	router.GET("/", func(c *gin.Context) {
-		c.Redirect(301, "/api/v1")
+		c.Redirect(http.StatusMovedPermanently, "/api/v1")
 	})
 
 	// Configure API v1
@@ -72,7 +73,8 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 
 	// Controllers --------------------------------------------------------------
 	newsController := controllers.NewsController{DB: db}
-	sessionController := controllers.SessionController{DB: db}
+	usersController := controllers.UsersController{DB: db}
+	sessionController := controllers.SessionController{DB: db, SecretHash: secret}
 	// --------------------------------------------------------------------------
 
 	// Public API ---------------------------------------------------------------
@@ -86,7 +88,8 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	// Auth API -----------------------------------------------------------------
 	auth := router.Group("/api/v1/auth")
 
-	auth.POST("/token", sessionController.Token)
+	auth.POST("/token", sessionController.Authorize)
+	auth.POST("/signup", sessionController.Create)
 	// --------------------------------------------------------------------------
 
 	// Private API --------------------------------------------------------------
@@ -97,6 +100,9 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	}
 
 	private.GET("/news", newsController.Index)
+	private.GET("/search", newsController.Search)
 	private.GET("/news/:id", newsController.Show)
+	private.GET("/users", usersController.Index)
+	private.GET("/users/:id", usersController.Show)
 	// --------------------------------------------------------------------------
 }
