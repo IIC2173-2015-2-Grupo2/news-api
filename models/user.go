@@ -19,6 +19,13 @@ type User struct {
 // ---------------------------------------------------------------------------
 
 /*
+Create user on database
+*/
+func (u *User) Create(db *neoism.Database) error {
+	return nil
+}
+
+/*
 GetUser returns the user with that id
 */
 func GetUser(db *neoism.Database, id int) (*User, error) {
@@ -38,6 +45,21 @@ func GetUser(db *neoism.Database, id int) (*User, error) {
 	} else {
 		return &users[0], nil
 	}
+}
+
+/*
+GetUsers returns collection of users
+*/
+func GetUsers(db *neoism.Database) (*[]User, error) {
+	var users []User
+	if err := db.Cypher(&neoism.CypherQuery{
+		Statement: `MATCH (new:User)
+								RETURN user.name as name, user.username as username, user.email as email`,
+		Result: &users,
+	}); err != nil {
+		return nil, err
+	}
+	return &users, nil
 }
 
 /*
