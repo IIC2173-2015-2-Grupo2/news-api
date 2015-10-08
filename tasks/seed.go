@@ -81,14 +81,19 @@ func main() {
     {"Nintendo cambia su política y creará videojuegos para celulares","http://www.emol.com/noticias/tecnologia/2015/03/17/708342/nintendo-cambia-de-politica-y-creara-juegos-para-celulares.html","Al fin nintendo decidio hacer algo distinto, juegos para celulares. La medida se tomo el...","0","emol"},
     {"Super Mario Bros cumplió 30 años","http://www.cnnchile.com/noticia/2015/09/13/super-mario-bros-cumplio-30-anos-","Shigeru Miyamoto creó hace 30 años, entonces sin imaginarlo, al personaje más reconocido de la historia de videojuegos. Tan rele...","0","cnn"},
     {"Presidenta Bachelet aseguró que solidez de la economía chilena es valorada en el extranjero","http://www.cnnchile.com/noticia/2015/09/30/presidenta-bachelet-aseguro-que-solidez-de-la-economia-chilena-es-valorada-en-el-extranjero","La mandataria aseguró que la agenda del Gobierno busca recuperar el dinamismo en el área.","1","cnn"},
-    {" Bachelet aseguró que solidez de la economía chilena es valorada en SQP","http://www.cnnchile.com/noticia/2015/09/30/presidenta-bachelet-aseguro-que-solidez-de-la-economia-chilena-es-valorada-en-el-extranjero","SQP es el mejor programa de politica en chile, es por esto...","1","lun"},
+    {" Bachelet aseguró que solidez de la economía chilena es valorada en SQP","http://www.lun.com/noticia/2015/09/30/presidenta-bachelet-aseguro-que-solidez-de-la-economia-chilena-es-valorada-en-el-extranjero","SQP es el mejor programa de politica en chile, es por esto...","1","lun"},
     {"Alguien metio un gol","http://www.lun.cl/alguien-metio-un-gol","Un gol fue hecho el dia de ayer. Esto es muy interesante y misterioso, ya que ayer...","2","lun"},
 
   }
 
 
 
+  //Localhost
   db, err := neoism.Connect("http://neo4j:12345678@localhost:7474/db/data")
+
+  //Server
+  // db, err := neoism.Connect("http://neo4j:7c38caaee73a5564a3183c0970118725189ef64e9a565c982edb10e4388f43df@arqui7.ing.puc.cl:80/db/data")
+
     println(err)
     println(db.HrefNodeIndex)
 
