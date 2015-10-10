@@ -1,10 +1,6 @@
 package models
 
-import (
-	"errors"
-
-	"github.com/jmcvetta/neoism"
-)
+import "github.com/jmcvetta/neoism"
 
 /*
 User model
@@ -19,10 +15,21 @@ type User struct {
 // ---------------------------------------------------------------------------
 
 /*
-Create user on database
+Save user on database
 */
-func (u *User) Create(db *neoism.Database) error {
-	return nil
+func (u *User) Save(db *neoism.Database) (*neoism.Node, error) {
+	node, err := db.CreateNode(neoism.Props{ // marshall struct into map
+		"name":     u.Name,
+		"username": u.Username,
+		"password": u.Password,
+		"email":    u.Email,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	node.AddLabel("User")
+	return node, nil
 }
 
 /*
@@ -40,7 +47,7 @@ func GetUser(db *neoism.Database, id int) (*User, error) {
 		return nil, err
 
 	} else if len(users) == 0 {
-		return nil, errors.New("not found")
+		return nil, nil // errors.New("not found") // TODO: return error
 
 	} else {
 		return &users[0], nil
@@ -77,7 +84,7 @@ func FindUserByUsername(db *neoism.Database, username string) (*User, error) {
 		return nil, err
 
 	} else if len(users) == 0 {
-		return nil, errors.New("not found")
+		return nil, nil // errors.New("not found") // TODO: return error
 
 	} else {
 		return &users[0], nil

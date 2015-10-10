@@ -7,9 +7,9 @@ import (
 )
 
 /*
-New model
+NewsItem model
 */
-type New struct {
+type NewsItem struct {
 	Title string `json:"title"`
 	URL   string `json:"url"`
 }
@@ -17,12 +17,12 @@ type New struct {
 // ---------------------------------------------------------------------------
 
 /*
-GetNew returns the new with that id
+GetNewsItem returns the new with that id
 */
-func GetNew(db *neoism.Database, id int) (*New, error) {
-	var news []New
+func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
+	var news []NewsItem
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:New)
+		Statement: `MATCH (new:NewsItem)
 								WHERE ID(new) = {id}
 								RETURN new.title as title, new.url as url`,
 		Parameters: neoism.Props{"id": id},
@@ -39,12 +39,12 @@ func GetNew(db *neoism.Database, id int) (*New, error) {
 }
 
 /*
-GetNews returns collection of news
+GetNewsItems returns collection of news
 */
-func GetNews(db *neoism.Database) (*[]New, error) {
-	var news []New
+func GetNewsItems(db *neoism.Database) (*[]NewsItem, error) {
+	var news []NewsItem
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:New)
+		Statement: `MATCH (new:NewsItem)
 								RETURN new.title as title, new.url as url`,
 		Result: &news,
 	}); err != nil {
