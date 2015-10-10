@@ -22,16 +22,21 @@ Create account
 */
 func (n *SessionController) Create(c *gin.Context) {
 	username, password := c.PostForm("username"), c.PostForm("password")
+	name, email := c.PostForm("email"), c.PostForm("name")
 
-	if duplicated, err := models.FindUserByUsername(n.DB, username); err != nil || duplicated != nil {
+	if len(username) == 0 || len(password) == 0 || len(name) == 0 || len(email) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing fields"})
+
+	} else if duplicated, err := models.FindUserByUsername(n.DB, username); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+
+	} else if duplicated != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "username already exists"})
 
 	} else if hashpassword, err := util.HashPass(password); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 
 	} else {
-		name, email := c.PostForm("email"), c.PostForm("name")
-
 		user := models.User{
 			Name:     name,
 			Username: username,
@@ -39,7 +44,7 @@ func (n *SessionController) Create(c *gin.Context) {
 			Password: hashpassword,
 		}
 
-		if err := user.Create(n.DB); err != nil {
+		if _, err := user.Save(n.DB); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 
 		} else {

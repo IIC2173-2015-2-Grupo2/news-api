@@ -20,7 +20,7 @@ type NewsController struct {
 Index show list
 */
 func (n *NewsController) Index(c *gin.Context) {
-	if news, err := models.GetNews(n.DB); err != nil {
+	if news, err := models.GetNewsItems(n.DB); err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
 
 	} else {
@@ -43,7 +43,7 @@ func (n *NewsController) Show(c *gin.Context) {
 	if id, err := strconv.Atoi(c.Param("id")); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
-	} else if new, err := models.GetNew(n.DB, id); err != nil {
+	} else if new, err := models.GetNewsItem(n.DB, id); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	} else {

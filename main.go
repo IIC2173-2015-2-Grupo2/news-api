@@ -38,7 +38,9 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	} else {
 		gin.SetMode(gin.DebugMode)
-		db.Session.Log = db != nil
+		if db != nil {
+			db.Session.Log = true
+		}
 	}
 
 	// Start
@@ -96,6 +98,7 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	private := router.Group("/api/v1/private")
 
 	if auth := os.Getenv("AUTH"); auth == "ENABLE" {
+		private.Use(middleware.APIToken())
 		private.Use(middleware.JWTAuth(secret))
 	}
 
