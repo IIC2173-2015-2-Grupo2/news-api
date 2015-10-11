@@ -27,7 +27,7 @@ Describes a User.
 
 ### API Usage
 
-#### `api/v1/signup`
+#### `api/v1/auth/signup`
 
 Creates an account. This returns the account session token
 
@@ -38,7 +38,7 @@ Creates an account. This returns the account session token
 | `email` | `string`| - |
 | `password`  | `string`| - |
 
-#### `api/v1/token`
+#### `api/v1/auth/token`
 
 Re-new expired token
 
