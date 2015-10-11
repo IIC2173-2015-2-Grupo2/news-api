@@ -1,0 +1,13 @@
+web:
+  restart: always
+  build: .
+  ports:
+    - "80:8000"
+  environment:
+    - ENVIRONMENT=PRODUCTION
+    - AUTH=ENABLE
+    - SECRET_HASH
+    - NEO4J_HOST
+    - NEO4J_PORT
+    - NEO4J_USER
+    - NEO4J_PASS
