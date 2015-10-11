@@ -21,28 +21,23 @@ type SessionController struct {
 Create account
 */
 func (n *SessionController) Create(c *gin.Context) {
-	username, password := c.PostForm("username"), c.PostForm("password")
-	name, email := c.PostForm("email"), c.PostForm("name")
+	var user models.User
+	c.Bind(&user)
 
-	if len(username) == 0 || len(password) == 0 || len(name) == 0 || len(email) == 0 {
+	if len(user.Username) == 0 || len(user.Password) == 0 || len(user.Name) == 0 || len(user.Email) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "missing fields"})
 
-	} else if duplicated, err := models.FindUserByUsername(n.DB, username); err != nil {
+	} else if duplicated, err := models.FindUserByUsername(n.DB, user.Username); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 
 	} else if duplicated != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "username already exists"})
 
-	} else if hashpassword, err := util.HashPass(password); err != nil {
+	} else if hashpassword, err := util.HashPass(user.Password); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 
 	} else {
-		user := models.User{
-			Name:     name,
-			Username: username,
-			Email:    email,
-			Password: hashpassword,
-		}
+		user.Password = hashpassword
 
 		if _, err := user.Save(n.DB); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -57,7 +52,7 @@ func (n *SessionController) Create(c *gin.Context) {
 Authorize user to access to private resources
 */
 func (n *SessionController) Authorize(c *gin.Context) {
-	username, password := c.PostForm("username"), c.PostForm("password")
+	username, password := c.Param("username"), c.Param("password")
 
 	if user, err := models.FindUserByUsername(n.DB, username); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "username not found"})
