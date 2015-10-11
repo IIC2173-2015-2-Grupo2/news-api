@@ -5,7 +5,7 @@
 
 ### Objects
 
-#### `New`
+#### `NewsItem`
 
 Describes a New.
 
@@ -47,7 +47,7 @@ Re-new expired token
 | `username`  | `string`| - |
 | `password`  | `string`| - |
 
-#### `api/v1/news`
+#### `api/v1/private/news`
 
 Returns the new's list
 
@@ -55,7 +55,7 @@ Returns the new's list
 |----------|------|-------------|
 |          |      |             |
 
-#### `api/v1/news/:id`
+#### `api/v1/private/news/:id`
 
 Returns the New associated with that `id`
 
@@ -63,7 +63,7 @@ Returns the New associated with that `id`
 |----------|------|-------------|
 |          |      |             |
 
-#### `api/v1/news/search`
+#### `api/v1/private/news/search`
 
 Search news with
 
