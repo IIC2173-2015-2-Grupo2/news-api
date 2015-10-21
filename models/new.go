@@ -41,7 +41,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags string[]) (*[]NewsItem, error) {
 	var news []NewsItem
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)
