@@ -3,7 +3,8 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-
+	"fmt"
+	"strings"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
@@ -20,7 +21,26 @@ type NewsController struct {
 Index show list
 */
 func (n *NewsController) Index(c *gin.Context) {
-	if news, err := models.GetNewsItems(n.DB); err != nil {
+	params := c.Request.URL.Query()
+	var tagsParams string
+
+	if(len(params["tags"]) > 0){
+		tagsParams = params["tags"][0]
+	}else{
+		tagsParams = ""
+	}
+
+	fmt.Printf("tagsParams\n")
+	fmt.Printf(tagsParams+"\n")
+
+	var tags []string
+	if(tagsParams!=""){
+		tags = strings.Split(tagsParams,",")
+	}else{
+		tags = nil
+	}
+
+	if news, err := models.GetNewsItems(n.DB,tags); err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
 
 	} else {

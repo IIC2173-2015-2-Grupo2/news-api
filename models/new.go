@@ -2,7 +2,7 @@ package models
 
 import (
 	"errors"
-
+	"fmt"
 	"github.com/jmcvetta/neoism"
 )
 
@@ -41,11 +41,32 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database, tags string[]) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags []string) (*[]NewsItem, error) {
 	var news []NewsItem
+	matchClause := ""
+
+	var stat string
+
+	if(tags != nil){
+		for _, tag := range tags {
+		  // index is the index where we are
+		  // tag is the tag from tags for where we are
+			matchClause = matchClause + "(new:NewsItem)--(:Tag{name: \"" + tag + "\"}) , "
+
+		}
+		matchClause = matchClause[0:len(matchClause) - 2]
+	}else{
+		matchClause = "(new:NewsItem)"
+	}
+	stat = "MATCH " + matchClause + 
+					 "RETURN new.title as title, new.url as url"
+	
+	
+	fmt.Printf("Match Clause\n")
+	fmt.Printf(matchClause+"\n")
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:NewsItem)
-								RETURN new.title as title, new.url as url`,
+		Statement: stat,
+		Parameters: neoism.Props{"matchClause": matchClause},
 		Result: &news,
 	}); err != nil {
 		return nil, err
