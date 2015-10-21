@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"github.com/jmcvetta/neoism"
 )
 
@@ -41,24 +42,41 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database, tags []string) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags []string, providers []string) (*[]NewsItem, error) {
+
 	var news []NewsItem
-	matchClause := ""
+	matchClause := "MATCH (new:NewsItem)"
+	whereClause := ""
+
 
 	var stat string
 
 	if(tags != nil){
+		matchClause= matchClause+", "
 		for _, tag := range tags {
 		  // index is the index where we are
 		  // tag is the tag from tags for where we are
-			matchClause = matchClause + "(new:NewsItem)--(:Tag{name: \"" + tag + "\"}) , "
+			matchClause = matchClause + "(new:NewsItem)--(:Tag{name: \"" + strings.TrimSpace(tag) + "\"}) , "
 
 		}
 		matchClause = matchClause[0:len(matchClause) - 2]
-	}else{
-		matchClause = "(new:NewsItem)"
 	}
-	stat = "MATCH " + matchClause + 
+	if(providers != nil){
+		whereClause= "WHERE "
+		matchClause = matchClause + ", (new:NewsItem)--(p:NewsProvider)"
+		arrayStr := "["
+		for _, provider := range providers {
+		  // index is the index where we are
+		  // provider is the provider from providers for where we are
+			arrayStr = arrayStr + "\""+strings.TrimSpace(provider)+"\", "
+
+		}
+		arrayStr=arrayStr+"\"\"]"
+		whereClause = "WHERE p.name in "+arrayStr
+	}
+
+	stat =  matchClause + " "+
+					whereClause + " "+
 					 "RETURN new.title as title, new.url as url"
 	
 	
@@ -66,7 +84,6 @@ func GetNewsItems(db *neoism.Database, tags []string) (*[]NewsItem, error) {
 	fmt.Printf(matchClause+"\n")
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: stat,
-		Parameters: neoism.Props{"matchClause": matchClause},
 		Result: &news,
 	}); err != nil {
 		return nil, err
