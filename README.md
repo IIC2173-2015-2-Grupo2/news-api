@@ -63,13 +63,17 @@ Returns the New associated with that `id`
 |----------|------|-------------|
 |          |      |             |
 
-#### `api/v1/private/news/search`
+#### `api/v1/private/search`
 
 Search news with
 
-| Argument | Type | Description |
+| GET Argument | Type | Description |
 |----------|------|-------------|
-|          |      |             |
+| `tags`     |   `string`   |      Get news with all tags       |
+| `providers`|   `string`   |      Get news from some provider       |
+
+Example
+api/v1/private/news?tags=tag1,tag2,tag3&providers=provider1,provider2,provider3
 
 
 ## Development
