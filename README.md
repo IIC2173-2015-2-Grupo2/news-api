@@ -116,37 +116,7 @@ $ make start
 
 ### [Docker](https://www.docker.com/)
 
-#### Install
-
-##### OSX
-Make sure you have installed [Homebrew](http://brew.sh/) and [Homebrew-Cask](http://caskroom.io/).
-```sh
-# Install Homebrew
-$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-# Install Homebrew-cask
-$ brew install caskroom/cask/brew-cask
-
-# Install Docker
-$ brew cask install virtualbox
-$ brew install docker docker-machine
-```
-
-#### Create Virtual Machine
-```sh
-# Create VM
-$ docker-machine create --driver virtualbox news-api-server
-
-# Setup
-$ eval "$(docker-machine env news-api-server)"
-```
-
 #### Run
-Run on port `6060`, to see the Virtual Machine IP:
-```sh
-$ docker-machine ip news-api-server
-```
-
 Build and run:
 ```sh
 $ make docker
