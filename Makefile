@@ -2,11 +2,6 @@ default: build
 
 # App name
 NAME = news-api
-ORGANIZATION = iic2173grupo2
-
-# Flags
-DBHOST = db-host
-DBPORT = db-port
 
 # Binary name
 EXEC = ./$(NAME)
