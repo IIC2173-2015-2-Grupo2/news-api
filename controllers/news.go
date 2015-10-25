@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
-	"fmt"
-	"strings"
+
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
@@ -17,12 +17,11 @@ type NewsController struct {
 	DB *neoism.Database
 }
 
-
 /*
 Index show list
 */
 func (n *NewsController) Index(c *gin.Context) {
-	if news, err := models.GetNewsItems(n.DB,nil,nil); err != nil {
+	if news, err := models.GetNewsItems(n.DB, nil, nil); err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"news": news})
@@ -33,46 +32,17 @@ func (n *NewsController) Index(c *gin.Context) {
 Search a new
 */
 func (n *NewsController) Search(c *gin.Context) {
-	// TODO: search
-	params := c.Request.URL.Query()
-		var tagsParams string
-		var providersParams string
+	tags := c.Request.URL.Query()["tags"]
+	providers := c.Request.URL.Query()["providers"]
 
-		if(len(params["tags"]) > 0){
-			tagsParams = params["tags"][0]
-		}else{
-			tagsParams = ""
-		}
+	fmt.Println(tags, providers)
 
-		if(len(params["providers"]) > 0){
-			providersParams = params["providers"][0]
-		}else{
-			providersParams = ""
-		}
+	if news, err := models.GetNewsItems(n.DB, tags, providers); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
-		fmt.Printf("tagsParams\n")
-		fmt.Printf(tagsParams+"\n")
-
-		var tags []string
-		if(tagsParams!=""){
-			tags = strings.Split(tagsParams,",")
-		}else{
-			tags = nil
-		}
-
-		var providers []string
-		if(providersParams!=""){
-			providers = strings.Split(providersParams,",")
-		}else{
-			providers = nil
-		}
-
-		if news, err := models.GetNewsItems(n.DB,tags,providers); err != nil {
-			c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
-
-		} else {
-			c.JSON(http.StatusOK, gin.H{"news": news})
-		}
+	} else {
+		c.JSON(http.StatusOK, gin.H{"news": news})
+	}
 }
 
 /*

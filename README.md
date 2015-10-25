@@ -7,10 +7,11 @@
 
 #### `NewsItem`
 
-Describes a New.
+Describes a NewsItem.
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | `number` | Unique ID |
 | `title` | `string` | - |
 | `url` | `string` | - |
 
@@ -20,60 +21,93 @@ Describes a User.
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | `number` | Unique ID |
 | `name` | `string` | - |
 | `username` | `string` | Primary key of `users` |
 | `email` | `string` | - |
-| `password` | `string` | Only to current registered user |
+
+#### `Tag`
+
+Describes a Tag. News have many tags.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | Tag name |
+
+#### `NewsProvider`
+
+Describes `NewsItem` source
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | News Provider name |
+
+---
 
 ### API Usage
 
-#### `api/v1/auth/signup`
+#### `POST` `api/v1/auth/signup`
 
-Creates an account. This returns the account session token
+Creates an account.
 
-| POST Argument | Type | Description |
+| Argument | Type | Description |
 |----------|------|-------------|
 | `name`  | `string`| - |
 | `username`  | `string`| - |
 | `email` | `string`| - |
 | `password`  | `string`| - |
 
-#### `api/v1/auth/token`
+This returns the account session token
+
+| Argument | Type | Description |
+|----------|------|-------------|
+| `token`  | `string`| Access token |
+
+#### `POST` `api/v1/auth/token`
 
 Re-new expired token
 
-| POST Argument | Type | Description |
+| Argument | Type | Description |
 |----------|------|-------------|
 | `username`  | `string`| - |
 | `password`  | `string`| - |
 
-#### `api/v1/private/news`
-
-Returns the new's list
+This returns the account session token
 
 | Argument | Type | Description |
 |----------|------|-------------|
-|          |      |             |
+| `token`  | `string`| Access token |
 
-#### `api/v1/private/news/:id`
+#### `GET` `api/v1/private/news`
 
-Returns the New associated with that `id`
+Returns a `NewItem`'s list
+
+#### `GET` `api/v1/private/news/:id`
+
+Returns the `NewItem` associated with that `id`
+
+#### `GET` `api/v1/private/search`
+
+Search `NewItem` with:
 
 | Argument | Type | Description |
 |----------|------|-------------|
-|          |      |             |
+| `tags`     |   `[]string`   |Filter by `Tag`'s name |
+| `providers`|   `[]string`   |Filter by `NewsProvider`'s name|
 
-#### `api/v1/private/search`
+##### Example
+```sh
+.../api/v1/private/news?tags=sports&tags=national&providers=newschannel
+```
+#### `GET` `api/v1/private/tags`
 
-Search news with
+Returns a `Tag`'s list
 
-| GET Argument | Type | Description |
-|----------|------|-------------|
-| `tags`     |   `string`   |      Get news with all tags       |
-| `providers`|   `string`   |      Get news from some provider       |
+#### `GET` `api/v1/private/news_providers`
 
-Example
-api/v1/private/news?tags=tag1,tag2,tag3&providers=provider1,provider2,provider3
+Returns a `NewsProvider`'s list
 
 
 ## Development
@@ -119,37 +153,6 @@ $ make start
 ```
 
 ### [Docker](https://www.docker.com/)
-
-#### Install
-
-##### OSX
-Make sure you have installed [Homebrew](http://brew.sh/) and [Homebrew-Cask](http://caskroom.io/).
-```sh
-# Install Homebrew
-$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-# Install Homebrew-cask
-$ brew install caskroom/cask/brew-cask
-
-# Install Docker
-$ brew cask install virtualbox
-$ brew install docker docker-machine
-```
-
-#### Create Virtual Machine
-```sh
-# Create VM
-$ docker-machine create --driver virtualbox news-api-server
-
-# Setup
-$ eval "$(docker-machine env news-api-server)"
-```
-
-#### Run
-Run on port `6060`, to see the Virtual Machine IP:
-```sh
-$ docker-machine ip news-api-server
-```
 
 Build and run:
 ```sh
