@@ -2,15 +2,17 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"strings"
+
 	"github.com/jmcvetta/neoism"
+	un "github.com/tobyhede/go-underscore"
 )
 
 /*
 NewsItem model
 */
 type NewsItem struct {
+	ID    int64  `json:"id"`
 	Title string `json:"title"`
 	URL   string `json:"url"`
 }
@@ -25,7 +27,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)
 								WHERE ID(new) = {id}
-								RETURN new.title as title, new.url as url`,
+								RETURN ID(new) as id, new.title as title, new.url as url`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -43,48 +45,26 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 GetNewsItems returns collection of news
 */
 func GetNewsItems(db *neoism.Database, tags []string, providers []string) (*[]NewsItem, error) {
-
 	var news []NewsItem
-	matchClause := "MATCH (new:NewsItem)"
-	whereClause := ""
 
+	matchClause := []string{"MATCH (new:NewsItem)"}
 
-	var stat string
+	matchClause = append(matchClause, un.MapString(func(tag string) string {
+		return "(new:NewsItem)--(:Tag{name: \"" + strings.TrimSpace(tag) + "\"})"
+	}, tags)...)
 
-	if(tags != nil){
-		matchClause= matchClause+", "
-		for _, tag := range tags {
-		  // index is the index where we are
-		  // tag is the tag from tags for where we are
-			matchClause = matchClause + "(new:NewsItem)--(:Tag{name: \"" + strings.TrimSpace(tag) + "\"}) , "
+	match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
 
-		}
-		matchClause = matchClause[0:len(matchClause) - 2]
-	}
-	if(providers != nil){
-		whereClause= "WHERE "
-		matchClause = matchClause + ", (new:NewsItem)--(p:NewsProvider)"
-		arrayStr := "["
-		for _, provider := range providers {
-		  // index is the index where we are
-		  // provider is the provider from providers for where we are
-			arrayStr = arrayStr + "\""+strings.TrimSpace(provider)+"\", "
-
-		}
-		arrayStr=arrayStr+"\"\"]"
-		whereClause = "WHERE p.name in "+arrayStr
+	where := ""
+	if len(providers) != 0 {
+		where = "WHERE p.name in [" + strings.Join(un.MapString(func(provider string) string {
+			return "\"" + strings.TrimSpace(provider) + "\""
+		}, providers), ", ") + "]"
 	}
 
-	stat =  matchClause + " "+
-					whereClause + " "+
-					 "RETURN new.title as title, new.url as url"
-	
-	
-	fmt.Printf("Match Clause\n")
-	fmt.Printf(matchClause+"\n")
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: stat,
-		Result: &news,
+		Statement: match + " " + where + "RETURN ID(new) as id, new.title as title, new.url as url",
+		Result:    &news,
 	}); err != nil {
 		return nil, err
 	}

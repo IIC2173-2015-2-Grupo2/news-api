@@ -76,6 +76,7 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	// Controllers --------------------------------------------------------------
 	newsController := controllers.NewsController{DB: db}
 	tagsController := controllers.TagsController{DB: db}
+	newsProvidersController := controllers.NewsProvidersController{DB: db}
 	usersController := controllers.UsersController{DB: db}
 	sessionController := controllers.SessionController{DB: db, SecretHash: secret}
 	// --------------------------------------------------------------------------
@@ -104,6 +105,7 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	}
 
 	private.GET("/tags", tagsController.Index)
+	private.GET("/news_providers", newsProvidersController.Index)
 	private.GET("/news", newsController.Index)
 	private.GET("/search", newsController.Search)
 	private.GET("/news/:id", newsController.Show)

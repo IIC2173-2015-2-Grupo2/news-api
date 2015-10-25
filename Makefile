@@ -47,7 +47,7 @@ start:
 
 # Build docker image
 docker-build:
-	docker build -no-cache -rm -t $(NAME) .
+	docker build --no-cache --rm -t $(NAME) .
 
 # Start application on port 6060
 docker-run:

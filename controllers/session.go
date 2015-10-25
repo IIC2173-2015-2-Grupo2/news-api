@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/util"
 	"github.com/gin-gonic/gin"

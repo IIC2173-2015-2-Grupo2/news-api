@@ -9,20 +9,20 @@ import (
 )
 
 /*
-TagsController CRUD
+NewsProvidersController CRUD
 */
-type TagsController struct {
+type NewsProvidersController struct {
 	DB *neoism.Database
 }
 
 /*
 Index show list
 */
-func (n *TagsController) Index(c *gin.Context) {
-	if tags, err := models.GetTags(n.DB); err != nil {
+func (n *NewsProvidersController) Index(c *gin.Context) {
+	if tags, err := models.GetNewsProviders(n.DB); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	} else {
-		c.JSON(http.StatusOK, gin.H{"tags": tags})
+		c.JSON(http.StatusOK, gin.H{"news_providers": tags})
 	}
 }
