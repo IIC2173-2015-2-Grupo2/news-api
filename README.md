@@ -7,10 +7,11 @@
 
 #### `NewsItem`
 
-Describes a New.
+Describes a NewsItem.
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | `number` | Unique ID |
 | `title` | `string` | - |
 | `url` | `string` | - |
 
@@ -20,56 +21,93 @@ Describes a User.
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | `number` | Unique ID |
 | `name` | `string` | - |
 | `username` | `string` | Primary key of `users` |
 | `email` | `string` | - |
-| `password` | `string` | Only to current registered user |
+
+#### `Tag`
+
+Describes a Tag. News have many tags.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | Tag name |
+
+#### `NewsProvider`
+
+Describes `NewsItem` source
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | News Provider name |
+
+---
 
 ### API Usage
 
-#### `api/v1/auth/signup`
+#### `POST` `api/v1/auth/signup`
 
-Creates an account. This returns the account session token
+Creates an account.
 
-| POST Argument | Type | Description |
+| Argument | Type | Description |
 |----------|------|-------------|
 | `name`  | `string`| - |
 | `username`  | `string`| - |
 | `email` | `string`| - |
 | `password`  | `string`| - |
 
-#### `api/v1/auth/token`
+This returns the account session token
+
+| Argument | Type | Description |
+|----------|------|-------------|
+| `token`  | `string`| Access token |
+
+#### `POST` `api/v1/auth/token`
 
 Re-new expired token
 
-| POST Argument | Type | Description |
+| Argument | Type | Description |
 |----------|------|-------------|
 | `username`  | `string`| - |
 | `password`  | `string`| - |
 
-#### `api/v1/private/news`
-
-Returns the new's list
+This returns the account session token
 
 | Argument | Type | Description |
 |----------|------|-------------|
-|          |      |             |
+| `token`  | `string`| Access token |
 
-#### `api/v1/private/news/:id`
+#### `GET` `api/v1/private/news`
 
-Returns the New associated with that `id`
+Returns a `NewItem`'s list
+
+#### `GET` `api/v1/private/news/:id`
+
+Returns the `NewItem` associated with that `id`
+
+#### `GET` `api/v1/private/search`
+
+Search `NewItem` with:
 
 | Argument | Type | Description |
 |----------|------|-------------|
-|          |      |             |
+| `tags`     |   `[]string`   |Filter by `Tag`'s name |
+| `providers`|   `[]string`   |Filter by `NewsProvider`'s name|
 
-#### `api/v1/private/news/search`
+##### Example
+```sh
+.../api/v1/private/news?tags=sports&tags=national&providers=newschannel
+```
+#### `GET` `api/v1/private/tags`
 
-Search news with
+Returns a `Tag`'s list
 
-| Argument | Type | Description |
-|----------|------|-------------|
-|          |      |             |
+#### `GET` `api/v1/private/news_providers`
+
+Returns a `NewsProvider`'s list
 
 
 ## Development
@@ -116,7 +154,6 @@ $ make start
 
 ### [Docker](https://www.docker.com/)
 
-#### Run
 Build and run:
 ```sh
 $ make docker

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,9 +21,8 @@ type NewsController struct {
 Index show list
 */
 func (n *NewsController) Index(c *gin.Context) {
-	if news, err := models.GetNewsItems(n.DB); err != nil {
+	if news, err := models.GetNewsItems(n.DB, nil, nil); err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
-
 	} else {
 		c.JSON(http.StatusOK, gin.H{"news": news})
 	}
@@ -32,8 +32,17 @@ func (n *NewsController) Index(c *gin.Context) {
 Search a new
 */
 func (n *NewsController) Search(c *gin.Context) {
-	// TODO: search
-	n.Index(c)
+	tags := c.Request.URL.Query()["tags"]
+	providers := c.Request.URL.Query()["providers"]
+
+	fmt.Println(tags, providers)
+
+	if news, err := models.GetNewsItems(n.DB, tags, providers); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+
+	} else {
+		c.JSON(http.StatusOK, gin.H{"news": news})
+	}
 }
 
 /*

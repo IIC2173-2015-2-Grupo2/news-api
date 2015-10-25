@@ -1,19 +1,21 @@
 {
 	"ImportPath": "github.com/IIC2173-2015-2-Grupo2/news-api",
 	"GoVersion": "go1.5.1",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
-			"ImportPath": "github.com/smartystreets/goconvey/convey",
-			"Comment": "1.5.0-437-ga29728e",
-			"Rev": "a29728e4d70bb23e436d03bee49b1793e70a9352"
-		},
-		{
 			"ImportPath": "github.com/dgrijalva/jwt-go",
-			"Comment": "v2.3.0-6-gf62f64e",
-			"Rev": "f62f64ea222e5e6d6d86421b5507b0862a3ebf7f"
+			"Comment": "v2.3.0-7-gacc5a5f",
+			"Rev": "acc5a5f31e3493f1992315fd85aa49226372b810"
 		},
 		{
 			"ImportPath": "github.com/gin-gonic/contrib/cors",
+			"Rev": "14f66d54cdb96059bafca98665bcc6d9df4951f2"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/contrib/gzip",
 			"Rev": "14f66d54cdb96059bafca98665bcc6d9df4951f2"
 		},
 		{
@@ -26,17 +28,17 @@
 			"Rev": "52fcc5dbf6e94df33ad313858fb94b713e9d1b4a"
 		},
 		{
-			"ImportPath": "github.com/jmcvetta/napping",
-			"Comment": "v2.1.1",
-			"Rev": "88d59de58478a2a0be4bf05884abcd56b8c63ad4"
-		},
-		{
 			"ImportPath": "github.com/jmcvetta/neoism",
-			"Rev": "eeddbeb504d6c0f411e083a85b312d6ab71c48b1"
+			"Comment": "v1.1.1",
+			"Rev": "4bc701cc0daa5728d8cf4db990b93450befcae9b"
 		},
 		{
 			"ImportPath": "github.com/jmcvetta/randutil",
 			"Rev": "2bb1b664bcff821e02b2a0644cd29c7e824d54f8"
+		},
+		{
+			"ImportPath": "github.com/jtolds/gls",
+			"Rev": "9a4a02dbe491bef4bab3c24fd9f3087d6c4c6690"
 		},
 		{
 			"ImportPath": "github.com/kr/pretty",
@@ -56,21 +58,45 @@
 			"Rev": "40e4aedc8fabf8c23e040057540867186712faa5"
 		},
 		{
+			"ImportPath": "github.com/smartystreets/assertions",
+			"Comment": "1.5.0-405-g01fedaa",
+			"Rev": "01fedaa993c0a9f9aa55111501cd7c81a49e812e"
+		},
+		{
+			"ImportPath": "github.com/smartystreets/goconvey/convey",
+			"Comment": "1.5.0-447-g1344f4b",
+			"Rev": "1344f4b7a89ef3c50a539d81fab0a34ef2432129"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Comment": "v1.0-51-gf3960ab",
+			"Rev": "f3960ab1f9664ecc4e27c78af27cc9063d745a43"
+		},
+		{
+			"ImportPath": "github.com/tobyhede/go-underscore",
+			"Rev": "ea55fc9569918f099b1dfa785088434e5c53544d"
+		},
+		{
 			"ImportPath": "golang.org/x/crypto/bcrypt",
-			"Rev": "0c93e1ff9f91f0c63bf17b123de503d023434fdd"
+			"Rev": "c8b9e6388ef638d5a8a9d865c634befdc46a6784"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/blowfish",
-			"Rev": "0c93e1ff9f91f0c63bf17b123de503d023434fdd"
+			"Rev": "c8b9e6388ef638d5a8a9d865c634befdc46a6784"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "03affa02f16950ea3188823456766ed60bfed9bb"
+			"Rev": "2cba614e8ff920c60240d2677bc019af32ee04e5"
 		},
 		{
 			"ImportPath": "gopkg.in/bluesuncorp/validator.v5",
 			"Comment": "v5.12",
 			"Rev": "d5acf1dac43705f8bfbb71d878e290e2bed3950b"
+		},
+		{
+			"ImportPath": "gopkg.in/jmcvetta/napping.v3",
+			"Comment": "v3.0.1",
+			"Rev": "f48aadd369a55d6436a5e99ca70419dfea62df9b"
 		}
 	]
 }

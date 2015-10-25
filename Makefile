@@ -3,7 +3,6 @@ default: build
 # App name
 NAME = news-api
 ORGANIZATION = iic2173grupo2
-DOCKER_IMAGE = $(ORGANIZATION)/$(NAME)
 
 # Flags
 DBHOST = db-host
@@ -48,11 +47,11 @@ start:
 
 # Build docker image
 docker-build:
-	docker build --no-cache --rm --tag=$(DOCKER_IMAGE) .
+	docker build --no-cache --rm -t $(NAME) .
 
 # Start application on port 8000
 docker-run:
-	docker run -e NEO4J_HOST -e NEO4J_PORT -e NEO4J_USER -e NEO4J_PASS --publish 8000:8000 --rm --name=$(NAME) $(DOCKER_IMAGE)
+	docker run -e NEO4J_HOST -e NEO4J_PORT -e NEO4J_USER -e NEO4J_PASS --publish 8000:8000 --rm --name=$(NAME) $(NAME)
 
 # Build and run
 docker:

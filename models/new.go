@@ -2,14 +2,17 @@ package models
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/jmcvetta/neoism"
+	un "github.com/tobyhede/go-underscore"
 )
 
 /*
 NewsItem model
 */
 type NewsItem struct {
+	ID    int64  `json:"id"`
 	Title string `json:"title"`
 	URL   string `json:"url"`
 }
@@ -24,7 +27,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)
 								WHERE ID(new) = {id}
-								RETURN new.title as title, new.url as url`,
+								RETURN ID(new) as id, new.title as title, new.url as url`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -41,12 +44,27 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags []string, providers []string) (*[]NewsItem, error) {
 	var news []NewsItem
+
+	matchClause := []string{"MATCH (new:NewsItem)"}
+
+	matchClause = append(matchClause, un.MapString(func(tag string) string {
+		return "(new:NewsItem)--(:Tag{name: \"" + strings.TrimSpace(tag) + "\"})"
+	}, tags)...)
+
+	match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
+
+	where := ""
+	if len(providers) != 0 {
+		where = "WHERE p.name in [" + strings.Join(un.MapString(func(provider string) string {
+			return "\"" + strings.TrimSpace(provider) + "\""
+		}, providers), ", ") + "]"
+	}
+
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:NewsItem)
-								RETURN new.title as title, new.url as url`,
-		Result: &news,
+		Statement: match + " " + where + "RETURN ID(new) as id, new.title as title, new.url as url",
+		Result:    &news,
 	}); err != nil {
 		return nil, err
 	}
