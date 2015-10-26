@@ -6,14 +6,13 @@ import (
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/util"
 	"github.com/gin-gonic/gin"
-	"github.com/jmcvetta/neoism"
 )
 
 /*
 SessionController CRUD
 */
 type SessionController struct {
-	DB         *neoism.Database
+	Base
 	SecretHash string
 }
 
@@ -48,6 +47,7 @@ func (n *SessionController) Create(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 
 		} else {
+			n.Log("Session", "Create")
 			n.Token(c, &user)
 		}
 	}
@@ -66,6 +66,7 @@ func (n *SessionController) Authorize(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid password"})
 
 	} else {
+		n.Log("Session", "Auth Token")
 		n.Token(c, user)
 	}
 }
