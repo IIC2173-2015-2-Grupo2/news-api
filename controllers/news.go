@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -34,8 +33,6 @@ Search a new
 func (n *NewsController) Search(c *gin.Context) {
 	tags := c.Request.URL.Query()["tags"]
 	providers := c.Request.URL.Query()["providers"]
-
-	fmt.Println(tags, providers)
 
 	if news, err := models.GetNewsItems(n.DB, tags, providers); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})

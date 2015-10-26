@@ -42,6 +42,7 @@ func main() {
 	} else if client, err := ga.NewClient("UA-XXXXXXXX-Y"); err != nil {
 		log.Fatal(err)
 	} else {
+		fmt.Printf("Analytics activated.\n")
 		analytics = client
 	}
 
