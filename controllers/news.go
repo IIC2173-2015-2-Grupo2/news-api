@@ -7,14 +7,13 @@ import (
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/jmcvetta/neoism"
 )
 
 /*
 NewsController CRUD
 */
 type NewsController struct {
-	DB *neoism.Database
+	Base
 }
 
 /*
@@ -24,6 +23,7 @@ func (n *NewsController) Index(c *gin.Context) {
 	if news, err := models.GetNewsItems(n.DB, nil, nil); err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
 	} else {
+		n.Log("NewsItems", "Index")
 		c.JSON(http.StatusOK, gin.H{"news": news})
 	}
 }
@@ -41,6 +41,7 @@ func (n *NewsController) Search(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	} else {
+		n.Log("NewsItems", "Search")
 		c.JSON(http.StatusOK, gin.H{"news": news})
 	}
 }
@@ -56,6 +57,7 @@ func (n *NewsController) Show(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	} else {
+		n.Log("NewsItems", c.Param("id"))
 		c.JSON(http.StatusOK, gin.H{"new": new})
 	}
 }
