@@ -39,7 +39,7 @@ func main() {
 	var analytics *ga.Client
 	if token := os.Getenv("ANALYTICS_TOKEN"); token == "" {
 		fmt.Printf("Analytics token not provided.\n")
-	} else if client, err := ga.NewClient("UA-XXXXXXXX-Y"); err != nil {
+	} else if client, err := ga.NewClient(token); err != nil {
 		log.Fatal(err)
 	} else {
 		fmt.Printf("Analytics activated.\n")

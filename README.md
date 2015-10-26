@@ -138,6 +138,8 @@ export NEO4J_HOST="192.168.99.100"
 export NEO4J_PORT="7474"
 export NEO4J_USER="neo4j"
 export NEO4J_PASS="neo4j"
+
+export ANALYTICS_TOKEN="GOOGLE_ANALYTICS_TOKEN"
 ```
 
 Setup other environment variables
