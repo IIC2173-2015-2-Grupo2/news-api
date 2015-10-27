@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
 	
@@ -56,9 +56,14 @@ func Server(db *neoism.Database) *gin.Engine {
 	router := gin.Default()
 
 	//Test with loader.io
-	router.GET("/loaderio-ff60d19f9f4552dfde03d4af1367879b", func(c *gin.Context){
-		c.String(http.StatusOK, "loaderio-ff60d19f9f4552dfde03d4af1367879b")
-	})
+	if token := os.Getenv("LOADER_IO_TOKEN"); token == "" {
+			fmt.Printf("Loader io token not provided.\n")
+	} else {
+		fmt.Printf("Loader io activated.\n")
+		router.GET("/"+token, func(c *gin.Context){
+			c.String(http.StatusOK, token)
+		})
+	}
 
 	// Middleware
 	router.Use(middleware.CORS())

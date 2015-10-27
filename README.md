@@ -145,6 +145,7 @@ Setup other environment variables
 export ENVIRONMENT="PRODUCTION"
 export SECRET_HASH="SECRET_HASH"
 export AUTH="ENABLE"
+export LOADER_IO_TOKEN="IO_TOKEN"
 ```
 
 Build and run the project locally using:
