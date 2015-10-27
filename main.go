@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
 	"github.com/jpillora/go-ogle-analytics"
@@ -68,10 +68,21 @@ func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
 	// Router
 	router := gin.Default()
 
+	//Test with loader.io
+	if token := os.Getenv("LOADER_IO_TOKEN"); token == "" {
+			fmt.Printf("Loader io token not provided.\n")
+	} else {
+		fmt.Printf("Loader io activated.\n")
+		router.GET("/"+token, func(c *gin.Context){
+			c.String(http.StatusOK, token)
+		})
+	}
+
 	// Middleware
 	router.Use(middleware.CORS())
 	router.Use(middleware.GZIP())
 
+	
 	// Welcome
 	router.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/api/v1")
@@ -126,4 +137,5 @@ func apiv1(router *gin.Engine, db *neoism.Database, analytics *ga.Client) {
 	private.GET("/users", usersController.Index)
 	private.GET("/users/:id", usersController.Show)
 	// --------------------------------------------------------------------------
+
 }
