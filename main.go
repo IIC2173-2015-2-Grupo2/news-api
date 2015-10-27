@@ -1,13 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
-	
+	"github.com/jpillora/go-ogle-analytics"
+
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/database"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/middleware"
@@ -33,6 +35,17 @@ func main() {
 		}
 	}
 
+	// Setup analytics client
+	var analytics *ga.Client
+	if token := os.Getenv("ANALYTICS_TOKEN"); token == "" {
+		fmt.Printf("Analytics token not provided.\n")
+	} else if client, err := ga.NewClient(token); err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Printf("Analytics activated.\n")
+		analytics = client
+	}
+
 	// Setup environment
 	if environment := os.Getenv("ENVIRONMENT"); environment == "PRODUCTION" {
 		gin.SetMode(gin.ReleaseMode)
@@ -44,13 +57,13 @@ func main() {
 	}
 
 	// Start
-	Server(db).Run(port)
+	Server(db, analytics).Run(port)
 }
 
 /*
 Server server
 */
-func Server(db *neoism.Database) *gin.Engine {
+func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
 
 	// Router
 	router := gin.Default()
@@ -76,20 +89,21 @@ func Server(db *neoism.Database) *gin.Engine {
 	})
 
 	// Configure API v1
-	apiv1(router, db)
+	apiv1(router, db, analytics)
 
 	return router
 }
 
-func apiv1(router *gin.Engine, db *neoism.Database) {
+func apiv1(router *gin.Engine, db *neoism.Database, analytics *ga.Client) {
 	secret := os.Getenv("SECRET_HASH")
 
 	// Controllers --------------------------------------------------------------
-	newsController := controllers.NewsController{DB: db}
-	tagsController := controllers.TagsController{DB: db}
-	newsProvidersController := controllers.NewsProvidersController{DB: db}
-	usersController := controllers.UsersController{DB: db}
-	sessionController := controllers.SessionController{DB: db, SecretHash: secret}
+	baseController := controllers.Base{DB: db, Analytics: analytics}
+	newsController := controllers.NewsController{Base: baseController}
+	tagsController := controllers.TagsController{Base: baseController}
+	newsProvidersController := controllers.NewsProvidersController{Base: baseController}
+	usersController := controllers.UsersController{Base: baseController}
+	sessionController := controllers.SessionController{Base: baseController, SecretHash: secret}
 	// --------------------------------------------------------------------------
 
 	// Public API ---------------------------------------------------------------

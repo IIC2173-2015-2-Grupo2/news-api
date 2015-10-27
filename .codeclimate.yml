@@ -1,12 +1,14 @@
 engines:
+  gofmt:
+    enabled: true
   golint:
     enabled: true
-  gofmt:
+  govet:
     enabled: true
 
 ratings:
   paths:
-  - "./**/*.go"
+  - "**.go"
 
 exclude_paths:
 - "Godeps/**/*"

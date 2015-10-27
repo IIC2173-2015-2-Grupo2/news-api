@@ -6,14 +6,13 @@ import (
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/jmcvetta/neoism"
 )
 
 /*
 UsersController CRUD
 */
 type UsersController struct {
-	DB *neoism.Database
+	Base
 }
 
 /*
@@ -24,6 +23,7 @@ func (n *UsersController) Index(c *gin.Context) {
 		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
 
 	} else {
+		n.Log("Users", "Index")
 		c.JSON(http.StatusOK, gin.H{"users": users})
 	}
 }
@@ -39,6 +39,7 @@ func (n *UsersController) Show(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	} else {
+		n.Log("Users", c.Param("id"))
 		c.JSON(http.StatusOK, gin.H{"user": user})
 	}
 }

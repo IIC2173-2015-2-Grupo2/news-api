@@ -5,14 +5,13 @@ import (
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/jmcvetta/neoism"
 )
 
 /*
 TagsController CRUD
 */
 type TagsController struct {
-	DB *neoism.Database
+	Base
 }
 
 /*
@@ -23,6 +22,7 @@ func (n *TagsController) Index(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	} else {
+		n.Log("Tags", "Index")
 		c.JSON(http.StatusOK, gin.H{"tags": tags})
 	}
 }

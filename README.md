@@ -1,5 +1,5 @@
 # News-API
-[![Build Status](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api.svg)](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api)
+[![Build Status](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api.svg)](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api) [![Code Climate](https://codeclimate.com/github/IIC2173-2015-2-Grupo2/news-api/badges/gpa.svg)](https://codeclimate.com/github/IIC2173-2015-2-Grupo2/news-api)
 
 ## API Documentation
 
@@ -138,6 +138,8 @@ export NEO4J_HOST="192.168.99.100"
 export NEO4J_PORT="7474"
 export NEO4J_USER="neo4j"
 export NEO4J_PASS="neo4j"
+
+export ANALYTICS_TOKEN="GOOGLE_ANALYTICS_TOKEN"
 ```
 
 Setup other environment variables

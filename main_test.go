@@ -27,7 +27,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	server = httptest.NewServer(Server(nil))
+	server = httptest.NewServer(Server(nil, nil))
 	fmt.Println("Server URL", server.URL)
 	defer server.Close()
 	os.Exit(m.Run())

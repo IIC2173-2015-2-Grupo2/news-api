@@ -16,8 +16,8 @@ func CORS() gin.HandlerFunc {
 		AbortOnError:    false,
 		AllowAllOrigins: true,
 		// AllowedOrigins:   []string{"*"}, // TODO: set GUI url
-		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "HEAD"},
-		AllowedHeaders:   []string{"Content-Type"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "HEAD", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	})
