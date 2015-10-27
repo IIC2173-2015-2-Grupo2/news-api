@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
 	"github.com/jpillora/go-ogle-analytics"
