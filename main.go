@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
-
+	
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/database"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/middleware"
@@ -55,10 +55,16 @@ func Server(db *neoism.Database) *gin.Engine {
 	// Router
 	router := gin.Default()
 
+	//Test with loader.io
+	router.GET("/loaderio-ff60d19f9f4552dfde03d4af1367879b", func(c *gin.Context){
+		c.String(http.StatusOK, "loaderio-ff60d19f9f4552dfde03d4af1367879b")
+	})
+
 	// Middleware
 	router.Use(middleware.CORS())
 	router.Use(middleware.GZIP())
 
+	
 	// Welcome
 	router.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/api/v1")
@@ -112,4 +118,5 @@ func apiv1(router *gin.Engine, db *neoism.Database) {
 	private.GET("/users", usersController.Index)
 	private.GET("/users/:id", usersController.Show)
 	// --------------------------------------------------------------------------
+
 }
