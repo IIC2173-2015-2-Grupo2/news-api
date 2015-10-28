@@ -80,6 +80,10 @@ This returns the account session token
 |----------|------|-------------|
 | `token`  | `string`| Access token |
 
+### Authenticated API Usage
+> Each requests must include a valid non-expired `Bearer <token>`  as `Authentication` header.
+> Otherwise will return a `401 Unauthorized` status code.
+
 #### `GET` `api/v1/private/news`
 
 Returns a `NewItem`'s list
