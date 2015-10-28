@@ -1,6 +1,8 @@
 # News-API
 [![Build Status](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api.svg)](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api) [![Code Climate](https://codeclimate.com/github/IIC2173-2015-2-Grupo2/news-api/badges/gpa.svg)](https://codeclimate.com/github/IIC2173-2015-2-Grupo2/news-api)
 
+> Format & style: [`gofmt`](https://golang.org/cmd/gofmt/), [`golint`](https://github.com/golang/lint), [`govet`](https://golang.org/cmd/vet/)
+
 ## API Documentation
 
 ### Objects
