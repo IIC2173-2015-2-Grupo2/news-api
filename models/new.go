@@ -13,8 +13,10 @@ NewsItem model
 */
 type NewsItem struct {
 	ID    int64  `json:"id"`
-	Title string `json:"title"`
+	TITLE string `json:"title"`
 	URL   string `json:"url"`
+	SUMMARY   string `json:"summary"`
+	IMAGE   string `json:"image"`
 }
 
 // ---------------------------------------------------------------------------
@@ -27,7 +29,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)
 								WHERE ID(new) = {id}
-								RETURN ID(new) as id, new.title as title, new.url as url`,
+								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.summary as summary`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -63,7 +65,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string) (*[]Ne
 	}
 
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: match + " " + where + "RETURN ID(new) as id, new.title as title, new.url as url",
+		Statement: match + " " + where + "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.summary as summary",
 		Result:    &news,
 	}); err != nil {
 		return nil, err
