@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
 	"github.com/jpillora/go-ogle-analytics"
@@ -67,13 +68,14 @@ func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
 	// Router
 	router := gin.Default()
 
-	//Test with loader.io
+	// Test with loader.io
 	if token := os.Getenv("LOADER_IO_TOKEN"); token == "" {
-			fmt.Printf("Loader io token not provided.\n")
+		fmt.Printf("Loader io token not provided.\n")
 	} else {
 		fmt.Printf("Loader io activated.\n")
-		router.GET("/"+token, func(c *gin.Context){
-			c.String(http.StatusOK, token)
+		router.GET("/"+token, func(c *gin.Context) {
+			c.Writer.Header().Set("Content-disposition", "attachment;filename="+token+".txt")
+			c.Data(http.StatusOK, "text/plain", []byte(token))
 		})
 	}
 
@@ -81,7 +83,6 @@ func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
 	router.Use(middleware.CORS())
 	router.Use(middleware.GZIP())
 
-	
 	// Welcome
 	router.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/api/v1")
