@@ -16,6 +16,8 @@ Describes a NewsItem.
 | `id` | `number` | Unique ID |
 | `title` | `string` | - |
 | `url` | `string` | - |
+| `summary` | `string` | Short description |
+| `image` | `string` | Representative image URL |
 
 #### `User`
 

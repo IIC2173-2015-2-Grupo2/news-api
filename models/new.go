@@ -12,10 +12,10 @@ import (
 NewsItem model
 */
 type NewsItem struct {
-	ID    int64  `json:"id"`
-	TITLE string `json:"title"`
-	URL   string `json:"url"`
-	SUMMARY   string `json:"summary"`
+	ID      int64  `json:"id"`
+	TITLE   string `json:"title"`
+	URL     string `json:"url"`
+	SUMMARY string `json:"summary"`
 	IMAGE   string `json:"image"`
 }
 
