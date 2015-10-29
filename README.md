@@ -1,6 +1,8 @@
 # News-API
 [![Build Status](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api.svg)](https://travis-ci.org/IIC2173-2015-2-Grupo2/news-api) [![Code Climate](https://codeclimate.com/github/IIC2173-2015-2-Grupo2/news-api/badges/gpa.svg)](https://codeclimate.com/github/IIC2173-2015-2-Grupo2/news-api)
 
+> Format & style: [`gofmt`](https://golang.org/cmd/gofmt/), [`golint`](https://github.com/golang/lint), [`govet`](https://golang.org/cmd/vet/)
+
 ## API Documentation
 
 ### Objects
@@ -79,6 +81,10 @@ This returns the account session token
 | Argument | Type | Description |
 |----------|------|-------------|
 | `token`  | `string`| Access token |
+
+### Authenticated API Usage
+> Each requests must include a valid non-expired `Bearer <token>`  as `Authentication` header.
+> Otherwise will return a `401 Unauthorized` status code.
 
 #### `GET` `api/v1/private/news`
 
