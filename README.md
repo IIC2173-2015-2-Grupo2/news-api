@@ -92,6 +92,10 @@ This returns the account session token
 
 Returns a `NewItem`'s list
 
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `page` | `uint` | `0` | Page number |
+
 #### `GET` `api/v1/private/news/:id`
 
 Returns the `NewItem` associated with that `id`
@@ -100,10 +104,11 @@ Returns the `NewItem` associated with that `id`
 
 Search `NewItem` with:
 
-| Argument | Type | Description |
-|----------|------|-------------|
-| `tags`     |   `[]string`   |Filter by `Tag`'s name |
-| `providers`|   `[]string`   |Filter by `NewsProvider`'s name|
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `page` | `uint` | `0` | Page number |
+| `tags` | `[]string` | | Filter by `Tag`'s name |
+| `providers` | `[]string` | | Filter by `NewsProvider`'s name|
 
 ##### Example
 ```sh
