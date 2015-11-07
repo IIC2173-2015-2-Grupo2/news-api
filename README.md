@@ -90,7 +90,7 @@ This returns the account session token
 
 #### `GET` `api/v1/private/news`
 
-Returns a `NewItem`'s list
+Returns a `NewsItem`'s list
 
 | Argument | Type | Default | Description |
 |----------|------|---------|-------------|
@@ -98,11 +98,11 @@ Returns a `NewItem`'s list
 
 #### `GET` `api/v1/private/news/:id`
 
-Returns the `NewItem` associated with that `id`
+Returns the `NewsItem` associated with that `id`
 
 #### `GET` `api/v1/private/search`
 
-Search `NewItem` with:
+Search `NewsItem` with:
 
 | Argument | Type | Default | Description |
 |----------|------|---------|-------------|
