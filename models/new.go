@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/jmcvetta/neoism"
@@ -20,6 +21,8 @@ type NewsItem struct {
 }
 
 // ---------------------------------------------------------------------------
+
+const itemsPerPage = 25
 
 /*
 GetNewsItem returns the new with that id
@@ -46,26 +49,31 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database, tags []string, providers []string) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags []string, providers []string, page int) (*[]NewsItem, error) {
 	var news []NewsItem
 
 	matchClause := []string{"MATCH (new:NewsItem)"}
 
 	matchClause = append(matchClause, un.MapString(func(tag string) string {
-		return "(new:NewsItem)--(:Tag{name: \"" + strings.TrimSpace(tag) + "\"})"
+		return fmt.Sprintf("(new:NewsItem)--(:Tag{name: \"%s\"})", strings.TrimSpace(tag))
 	}, tags)...)
 
 	match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
 
 	where := ""
 	if len(providers) != 0 {
-		where = "WHERE p.name in [" + strings.Join(un.MapString(func(provider string) string {
-			return "\"" + strings.TrimSpace(provider) + "\""
-		}, providers), ", ") + "]"
+		names := un.MapString(func(provider string) string {
+			return fmt.Sprintf("\"%s\"", strings.TrimSpace(provider))
+		}, providers)
+
+		where = fmt.Sprintf("WHERE p.name in [%s]", strings.Join(names, ", "))
 	}
 
+	paging := fmt.Sprintf("SKIP %d LIMIT %d", page*itemsPerPage, itemsPerPage)
+	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.summary as summary"
+
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: match + " " + where + "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.summary as summary",
+		Statement: fmt.Sprintf("%s %s %s %s", match, where, query, paging),
 		Result:    &news,
 	}); err != nil {
 		return nil, err
