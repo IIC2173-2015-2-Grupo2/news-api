@@ -1,16 +1,19 @@
+
+
 package models
 
-import "github.com/jmcvetta/neoism"
+import (
+  "github.com/jinzhu/gorm"
+  _ "github.com/lib/pq"
+  _ "fmt"
+)
 
-/*
-User model
-*/
 type User struct {
-	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+    ID           int `gorm:"primary_key"`
+    Name         string   `sql:"size:255"` // Default size for string is 255, you could reset it with this tag
+    Username       string  `sql:"size:255"`
+    Email          string  `sql:"size:255"`
+    Password       string  `sql:"size:255"`
 }
 
 // ---------------------------------------------------------------------------
@@ -18,76 +21,41 @@ type User struct {
 /*
 Save user on database
 */
-func (u *User) Save(db *neoism.Database) (*neoism.Node, error) {
-	node, err := db.CreateNode(neoism.Props{ // marshall struct into map
-		"name":     u.Name,
-		"username": u.Username,
-		"password": u.Password,
-		"email":    u.Email,
-	})
+func (u *User) Save(db *gorm.DB) (*User, error) {
+	db.Create(&u)
 
-	if err != nil {
-		return nil, err
-	}
-	node.AddLabel("User")
-	return node, nil
+	return u, nil
 }
 
 /*
 GetUser returns the user with that id
 */
-func GetUser(db *neoism.Database, id int) (*User, error) {
-	var users []User
-	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (user:User)
-								WHERE ID(user) = {id}
-								RETURN ID(user) as id, user.name as name, user.username as username, user.email as email`,
-		Parameters: neoism.Props{"id": id},
-		Result:     &users,
-	}); err != nil {
-		return nil, err
-
-	} else if len(users) == 0 {
-		return nil, nil // errors.New("not found") // TODO: return error
-
-	} else {
-		return &users[0], nil
-	}
+func GetUser(db *gorm.DB, id int) (*User, error){
+	var user User
+	db.Where("ID = ?", id).First(&user)
+	return &user, nil
 }
 
 /*
 GetUsers returns collection of users
 */
-func GetUsers(db *neoism.Database) (*[]User, error) {
+func GetUsers(db *gorm.DB) (*[]User, error) {
 	var users []User
-	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:User)
-								RETURN ID(user) as id, user.name as name, user.username as username, user.email as email`,
-		Result: &users,
-	}); err != nil {
-		return nil, err
-	}
+	db.Find(&users)
 	return &users, nil
 }
 
 /*
 FindUserByUsername find user
 */
-func FindUserByUsername(db *neoism.Database, username string) (*User, error) {
+func FindUserByUsername(db *gorm.DB, username string) (*User,error) {
 	var users []User
-	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (user:User)
-								WHERE user.username = {username}
-								RETURN ID(user) as id, user.name as name, user.username as username, user.email as email, user.password as password`,
-		Parameters: neoism.Props{"username": username},
-		Result:     &users,
-	}); err != nil {
-		return nil, err
+	db.Where("username = ?", username).Find(&users)
 
-	} else if len(users) == 0 {
-		return nil, nil // errors.New("not found") // TODO: return error
-
-	} else {
+	if(len(users)>0){
 		return &users[0], nil
+	}else{
+		return nil, nil;
 	}
+	
 }

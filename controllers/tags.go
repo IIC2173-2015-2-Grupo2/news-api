@@ -11,7 +11,7 @@ import (
 TagsController CRUD
 */
 type TagsController struct {
-	Base
+	Neo4jBase
 }
 
 /*

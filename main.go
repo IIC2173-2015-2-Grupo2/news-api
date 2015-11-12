@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmcvetta/neoism"
+	"github.com/jinzhu/gorm"
 	"github.com/jpillora/go-ogle-analytics"
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
@@ -34,6 +35,12 @@ func main() {
 			db = connected
 		}
 	}
+	pgdb, errpg := gorm.Open("postgres", "user=gslopez dbname=newsapi sslmode=disable")
+
+	if(errpg != nil){
+	  fmt.Printf(errpg.Error())
+	  fmt.Printf("Se debe crear la base de datos 'newsapi' en posstgresql")
+	}
 
 	// Setup analytics client
 	var analytics *ga.Client
@@ -57,13 +64,13 @@ func main() {
 	}
 
 	// Start
-	Server(db, analytics).Run(port)
+	Server(db, &pgdb, analytics).Run(port)
 }
 
 /*
 Server server
 */
-func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
+func Server(db *neoism.Database,pgdb *gorm.DB, analytics *ga.Client) *gin.Engine {
 
 	// Router
 	router := gin.Default()
@@ -89,21 +96,25 @@ func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
 	})
 
 	// Configure API v1
-	apiv1(router, db, analytics)
+	apiv1(router, db,pgdb, analytics)
 
 	return router
 }
 
-func apiv1(router *gin.Engine, db *neoism.Database, analytics *ga.Client) {
+func apiv1(router *gin.Engine, db *neoism.Database,pgdb *gorm.DB, analytics *ga.Client) {
 	secret := os.Getenv("SECRET_HASH")
 
 	// Controllers --------------------------------------------------------------
-	baseController := controllers.Base{DB: db, Analytics: analytics}
-	newsController := controllers.NewsController{Base: baseController}
-	tagsController := controllers.TagsController{Base: baseController}
-	newsProvidersController := controllers.NewsProvidersController{Base: baseController}
-	usersController := controllers.UsersController{Base: baseController}
-	sessionController := controllers.SessionController{Base: baseController, SecretHash: secret}
+	base := controllers.Base{Analytics: analytics}
+	neo4jBaseController := controllers.Neo4jBase{DB: db, Base: base}
+	pgBaseController := controllers.PgBase{DB: pgdb, Base: base}
+
+
+	newsController := controllers.NewsController{Neo4jBase: neo4jBaseController}
+	tagsController := controllers.TagsController{Neo4jBase: neo4jBaseController}
+	newsProvidersController := controllers.NewsProvidersController{Neo4jBase: neo4jBaseController}
+	usersController := controllers.UsersController{PgBase: pgBaseController}
+	sessionController := controllers.SessionController{PgBase: pgBaseController, SecretHash: secret}
 	// --------------------------------------------------------------------------
 
 	// Public API ---------------------------------------------------------------
