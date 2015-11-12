@@ -39,6 +39,15 @@ Describes a Tag. News have many tags.
 | `id` | `number` | Unique ID |
 | `name` | `string` | Tag name |
 
+#### `Place`
+
+Describes a location, place or city.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | Place name |
+
 #### `NewsProvider`
 
 Describes `NewsItem` source
@@ -85,7 +94,7 @@ This returns the account session token
 | `token`  | `string`| Access token |
 
 ### Authenticated API Usage
-> Each requests must include a valid non-expired `Bearer <token>`  as `Authentication` header.
+> Each request must include a valid non-expired `Bearer <token>`  as `Authentication` header.
 > Otherwise will return a `401 Unauthorized` status code.
 
 #### `GET` `api/v1/private/news`
@@ -107,6 +116,7 @@ Search `NewsItem` with:
 | Argument | Type | Default | Description |
 |----------|------|---------|-------------|
 | `page` | `uint` | `0` | Page number |
+| `places` | `[]string` | News related to any of this places |
 | `tags` | `[]string` | | Filter by `Tag`'s name |
 | `providers` | `[]string` | | Filter by `NewsProvider`'s name|
 

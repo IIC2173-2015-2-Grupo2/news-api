@@ -49,7 +49,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database, tags []string, providers []string, page int) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags, places, providers []string, page int) (*[]NewsItem, error) {
 	var news []NewsItem
 
 	matchClause := []string{"MATCH (new:NewsItem)"}
