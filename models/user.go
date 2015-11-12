@@ -48,7 +48,7 @@ func GetUser(db *neoism.Database, id int) (*User, error) {
 		return nil, err
 
 	} else if len(users) == 0 {
-		return nil, nil // errors.New("not found") // TODO: return error
+		return nil, nil
 
 	} else {
 		return &users[0], nil
@@ -85,7 +85,7 @@ func FindUserByUsername(db *neoism.Database, username string) (*User, error) {
 		return nil, err
 
 	} else if len(users) == 0 {
-		return nil, nil // errors.New("not found") // TODO: return error
+		return nil, nil
 
 	} else {
 		return &users[0], nil
