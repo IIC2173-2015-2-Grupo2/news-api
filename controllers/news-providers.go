@@ -11,7 +11,7 @@ import (
 NewsProvidersController CRUD
 */
 type NewsProvidersController struct {
-	Base
+	Neo4jBase
 }
 
 /*

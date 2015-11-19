@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
 	"github.com/jmcvetta/neoism"
 	"github.com/jpillora/go-ogle-analytics"
 )
@@ -11,8 +12,23 @@ import (
 Base CRUD
 */
 type Base struct {
-	DB        *neoism.Database
 	Analytics *ga.Client
+}
+
+/*
+Neo4jBase Database base
+*/
+type Neo4jBase struct {
+	Base
+	DB *neoism.Database
+}
+
+/*
+PgBase Database base
+*/
+type PgBase struct {
+	Base
+	DB *gorm.DB
 }
 
 /*

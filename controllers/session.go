@@ -12,7 +12,7 @@ import (
 SessionController CRUD
 */
 type SessionController struct {
-	Base
+	PgBase
 	SecretHash string
 }
 

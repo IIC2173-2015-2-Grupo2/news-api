@@ -12,7 +12,7 @@ import (
 UsersController CRUD
 */
 type UsersController struct {
-	Base
+	PgBase
 }
 
 /*

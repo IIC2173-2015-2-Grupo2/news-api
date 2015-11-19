@@ -7,12 +7,15 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/jmcvetta/neoism"
 	"github.com/jpillora/go-ogle-analytics"
+	_ "github.com/lib/pq"
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/database"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/middleware"
+	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 )
 
 const (
@@ -20,7 +23,7 @@ const (
 )
 
 func main() {
-	// Database setup
+	// Neo4J Database setup
 	var db *neoism.Database
 	if os.Getenv("NEO4J_HOST") != "" && os.Getenv("NEO4J_PORT") != "" {
 		if connected, err := database.Connect(
@@ -33,6 +36,16 @@ func main() {
 		} else {
 			db = connected
 		}
+	}
+
+	// Postgres Database setup
+	var pgdb *gorm.DB
+	if connected, err := gorm.Open("postgres", "user=postgres dbname=newsapi sslmode=disable host=db"); err != nil {
+		// if connected, err := gorm.Open("postgres", "user=newsapi dbname=newsapi sslmode=disable"); err != nil {
+		log.Fatal(err)
+	} else {
+		pgdb = &connected
+		pgdb.AutoMigrate(&models.User{})
 	}
 
 	// Setup analytics client
@@ -57,13 +70,13 @@ func main() {
 	}
 
 	// Start
-	Server(db, analytics).Run(port)
+	Server(db, pgdb, analytics).Run(port)
 }
 
 /*
 Server server
 */
-func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
+func Server(db *neoism.Database, pgdb *gorm.DB, analytics *ga.Client) *gin.Engine {
 
 	// Router
 	router := gin.Default()
@@ -89,21 +102,24 @@ func Server(db *neoism.Database, analytics *ga.Client) *gin.Engine {
 	})
 
 	// Configure API v1
-	apiv1(router, db, analytics)
+	apiv1(router, db, pgdb, analytics)
 
 	return router
 }
 
-func apiv1(router *gin.Engine, db *neoism.Database, analytics *ga.Client) {
+func apiv1(router *gin.Engine, db *neoism.Database, pgdb *gorm.DB, analytics *ga.Client) {
 	secret := os.Getenv("SECRET_HASH")
 
 	// Controllers --------------------------------------------------------------
-	baseController := controllers.Base{DB: db, Analytics: analytics}
-	newsController := controllers.NewsController{Base: baseController}
-	tagsController := controllers.TagsController{Base: baseController}
-	newsProvidersController := controllers.NewsProvidersController{Base: baseController}
-	usersController := controllers.UsersController{Base: baseController}
-	sessionController := controllers.SessionController{Base: baseController, SecretHash: secret}
+	base := controllers.Base{Analytics: analytics}
+	neo4jBaseController := controllers.Neo4jBase{DB: db, Base: base}
+	pgBaseController := controllers.PgBase{DB: pgdb, Base: base}
+
+	newsController := controllers.NewsController{Neo4jBase: neo4jBaseController}
+	tagsController := controllers.TagsController{Neo4jBase: neo4jBaseController}
+	newsProvidersController := controllers.NewsProvidersController{Neo4jBase: neo4jBaseController}
+	usersController := controllers.UsersController{PgBase: pgBaseController}
+	sessionController := controllers.SessionController{PgBase: pgBaseController, SecretHash: secret}
 	// --------------------------------------------------------------------------
 
 	// Public API ---------------------------------------------------------------
