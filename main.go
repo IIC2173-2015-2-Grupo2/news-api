@@ -10,10 +10,12 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/jmcvetta/neoism"
 	"github.com/jpillora/go-ogle-analytics"
+	_ "github.com/lib/pq"
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/database"
 	"github.com/IIC2173-2015-2-Grupo2/news-api/middleware"
+	"github.com/IIC2173-2015-2-Grupo2/news-api/models"
 )
 
 const (
@@ -21,7 +23,7 @@ const (
 )
 
 func main() {
-	// Database setup
+	// Neo4J Database setup
 	var db *neoism.Database
 	if os.Getenv("NEO4J_HOST") != "" && os.Getenv("NEO4J_PORT") != "" {
 		if connected, err := database.Connect(
@@ -35,11 +37,15 @@ func main() {
 			db = connected
 		}
 	}
-	pgdb, errpg := gorm.Open("postgres", "user=gslopez dbname=newsapi sslmode=disable")
 
-	if errpg != nil {
-		fmt.Printf(errpg.Error())
-		fmt.Printf("Se debe crear la base de datos 'newsapi' en posstgresql")
+	// Postgres Database setup
+	var pgdb *gorm.DB
+	if connected, err := gorm.Open("postgres", "user=postgres dbname=newsapi sslmode=disable host=db"); err != nil {
+		// if connected, err := gorm.Open("postgres", "user=newsapi dbname=newsapi sslmode=disable"); err != nil {
+		log.Fatal(err)
+	} else {
+		pgdb = &connected
+		pgdb.AutoMigrate(&models.User{})
 	}
 
 	// Setup analytics client
@@ -64,7 +70,7 @@ func main() {
 	}
 
 	// Start
-	Server(db, &pgdb, analytics).Run(port)
+	Server(db, pgdb, analytics).Run(port)
 }
 
 /*
