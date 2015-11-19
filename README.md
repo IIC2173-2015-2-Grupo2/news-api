@@ -172,5 +172,22 @@ $ make start
 
 Build and run:
 ```sh
-$ make docker
+$ docker-compose up -d
+```
+
+##### Setup Postgres
+
+Log to postgres container:
+```sh
+$ docker exec -it newsapi_db_1 /bin/bash
+```
+
+Log to postgres service:
+```sh
+$ psql -U postgres
+```
+
+Create Database
+```sh
+CREATE DATABASE newsapi;
 ```
