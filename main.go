@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmcvetta/neoism"
 	"github.com/jinzhu/gorm"
+	"github.com/jmcvetta/neoism"
 	"github.com/jpillora/go-ogle-analytics"
 
 	"github.com/IIC2173-2015-2-Grupo2/news-api/controllers"
@@ -37,9 +37,9 @@ func main() {
 	}
 	pgdb, errpg := gorm.Open("postgres", "user=gslopez dbname=newsapi sslmode=disable")
 
-	if(errpg != nil){
-	  fmt.Printf(errpg.Error())
-	  fmt.Printf("Se debe crear la base de datos 'newsapi' en posstgresql")
+	if errpg != nil {
+		fmt.Printf(errpg.Error())
+		fmt.Printf("Se debe crear la base de datos 'newsapi' en posstgresql")
 	}
 
 	// Setup analytics client
@@ -70,7 +70,7 @@ func main() {
 /*
 Server server
 */
-func Server(db *neoism.Database,pgdb *gorm.DB, analytics *ga.Client) *gin.Engine {
+func Server(db *neoism.Database, pgdb *gorm.DB, analytics *ga.Client) *gin.Engine {
 
 	// Router
 	router := gin.Default()
@@ -96,19 +96,18 @@ func Server(db *neoism.Database,pgdb *gorm.DB, analytics *ga.Client) *gin.Engine
 	})
 
 	// Configure API v1
-	apiv1(router, db,pgdb, analytics)
+	apiv1(router, db, pgdb, analytics)
 
 	return router
 }
 
-func apiv1(router *gin.Engine, db *neoism.Database,pgdb *gorm.DB, analytics *ga.Client) {
+func apiv1(router *gin.Engine, db *neoism.Database, pgdb *gorm.DB, analytics *ga.Client) {
 	secret := os.Getenv("SECRET_HASH")
 
 	// Controllers --------------------------------------------------------------
 	base := controllers.Base{Analytics: analytics}
 	neo4jBaseController := controllers.Neo4jBase{DB: db, Base: base}
 	pgBaseController := controllers.PgBase{DB: pgdb, Base: base}
-
 
 	newsController := controllers.NewsController{Neo4jBase: neo4jBaseController}
 	tagsController := controllers.TagsController{Neo4jBase: neo4jBaseController}
