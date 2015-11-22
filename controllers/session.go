@@ -59,7 +59,10 @@ Authorize user to access to private resources
 func (n *SessionController) Authorize(c *gin.Context) {
 	username, password := c.PostForm("username"), c.PostForm("password")
 
-	if user, err := models.FindUserByUsername(n.DB, username); err != nil {
+	if len(username) == 0 || len(password) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing fields"})
+
+	} else if user, err := models.FindUserByUsername(n.DB, username); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "username not found"})
 
 	} else if err := util.ValidatePass(password, user.Password); err != nil {
@@ -76,7 +79,7 @@ Token creation for an user
 */
 func (n *SessionController) Token(c *gin.Context, user *models.User) {
 	claims := map[string]interface{}{
-		"ID": user.Username,
+		"ID": user.ID,
 	}
 
 	if token, err := util.Token(n.SecretHash, claims); err != nil {
