@@ -7,7 +7,7 @@ import (
 )
 
 func expirationTime() time.Duration {
-	return time.Minute * 1
+	return time.Minute * 60
 }
 
 /*

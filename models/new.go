@@ -13,11 +13,13 @@ import (
 NewsItem model
 */
 type NewsItem struct {
-	ID      int64  `json:"id"`
-	TITLE   string `json:"title"`
-	URL     string `json:"url"`
-	SUMMARY string `json:"summary"`
-	IMAGE   string `json:"image"`
+	ID       int64  `json:"id"`
+	Title    string `json:"title"`
+	URL      string `json:"url"`
+	Source   string `json:"source"`
+	Language string `json:"language"`
+	Body     string `json:"body"`
+	Image    string `json:"image"`
 }
 
 // ---------------------------------------------------------------------------
@@ -32,7 +34,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)
 								WHERE ID(new) = {id}
-								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.summary as summary`,
+								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, new.language as language, new.source as source`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -58,7 +60,8 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, page i
 		return fmt.Sprintf("(new:NewsItem)--(:Tag{name: \"%s\"})", strings.TrimSpace(tag))
 	}, tags)...)
 
-	match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
+	// match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
+	match := strings.Join(matchClause, ", ")
 
 	where := ""
 	if len(providers) != 0 {
@@ -66,11 +69,12 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, page i
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(provider))
 		}, providers)
 
-		where = fmt.Sprintf("WHERE p.name in [%s]", strings.Join(names, ", "))
+		// where = fmt.Sprintf("WHERE p.name in [%s]", strings.Join(names, ", "))
+		where = fmt.Sprintf("WHERE new.source in [%s]", strings.Join(names, ", "))
 	}
 
 	paging := fmt.Sprintf("SKIP %d LIMIT %d", page*itemsPerPage, itemsPerPage)
-	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.summary as summary"
+	query := "RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, new.language as language, new.source as source"
 
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: fmt.Sprintf("%s %s %s %s", match, where, query, paging),
