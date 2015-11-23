@@ -16,7 +16,7 @@ type NewsItem struct {
 	ID      int64  `json:"id"`
 	TITLE   string `json:"title"`
 	URL     string `json:"url"`
-	SUMMARY string `json:"summary"`
+	BODY string `json:"body"`
 	IMAGE   string `json:"image"`
 }
 
@@ -32,7 +32,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)
 								WHERE ID(new) = {id}
-								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.summary as summary`,
+								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -70,7 +70,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, page i
 	}
 
 	paging := fmt.Sprintf("SKIP %d LIMIT %d", page*itemsPerPage, itemsPerPage)
-	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.summary as summary"
+	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body"
 
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: fmt.Sprintf("%s %s %s %s", match, where, query, paging),
