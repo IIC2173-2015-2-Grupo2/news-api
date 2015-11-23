@@ -30,9 +30,9 @@ GetNewsItem returns the new with that id
 func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	var news []NewsItem
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:NewsItem)
+		Statement: `MATCH (new:NewsItem)-[r:posted]-(k:NewsProvider)
 								WHERE ID(new) = {id}
-								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body`,
+								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, k.name as source`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -58,7 +58,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, page i
 		return fmt.Sprintf("(new:NewsItem)--(:Tag{name: \"%s\"})", strings.TrimSpace(tag))
 	}, tags)...)
 
-	match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
+	match := strings.Join(append(matchClause, "(new:NewsItem)-[r:posted]-(p:NewsProvider)"), ", ")
 
 	where := ""
 	if len(providers) != 0 {
@@ -70,7 +70,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, page i
 	}
 
 	paging := fmt.Sprintf("SKIP %d LIMIT %d", page*itemsPerPage, itemsPerPage)
-	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body"
+	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body, p.name as source"
 
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: fmt.Sprintf("%s %s %s %s", match, where, query, paging),
