@@ -13,12 +13,13 @@ import (
 NewsItem model
 */
 type NewsItem struct {
-	ID      int64  `json:"id"`
-	TITLE   string `json:"title"`
-	URL     string `json:"url"`
-	BODY string `json:"body"`
-	IMAGE   string `json:"image"`
-	SOURCE   string `json:"source"`
+	ID       int64  `json:"id"`
+	Title    string `json:"title"`
+	URL      string `json:"url"`
+	Source   string `json:"source"`
+	Language string `json:"language"`
+	Body     string `json:"body"`
+	Image    string `json:"image"`
 }
 
 // ---------------------------------------------------------------------------
@@ -33,7 +34,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)<-[r:posted]-(k:NewsProvider)
 								WHERE ID(new) = {id}
-								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, k.name as source`,
+								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, new.language as language, k.name as source`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -62,6 +63,8 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 	matchClause = append(matchClause, un.MapString(func(category string) string {
 		return fmt.Sprintf("(new:NewsItem)--(:Category{name: \"%s\"})", strings.TrimSpace(category))
 	}, categories)...)
+	// match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
+	// match := strings.Join(matchClause, ", ")
 
 	match := strings.Join(append(matchClause, "(new:NewsItem)"), ", ")
 
@@ -72,11 +75,12 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(provider))
 		}, providers)
 
-		where = fmt.Sprintf("WHERE p.name in [%s]", strings.Join(names, ", "))
+		// where = fmt.Sprintf("WHERE p.name in [%s]", strings.Join(names, ", "))
+		where = fmt.Sprintf("WHERE new.source in [%s]", strings.Join(names, ", "))
 	}
 
 	paging := fmt.Sprintf("SKIP %d LIMIT %d", page*itemsPerPage, itemsPerPage)
-	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body, p.name as source"
+	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body,new.language as language, p.name as source"
 
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: fmt.Sprintf("%s %s %s %s", match, where, query, paging),

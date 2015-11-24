@@ -12,7 +12,7 @@ import (
 NewsController CRUD
 */
 type NewsController struct {
-	Base
+	Neo4jBase
 }
 
 /*

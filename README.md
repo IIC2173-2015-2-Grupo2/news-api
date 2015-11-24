@@ -16,7 +16,9 @@ Describes a NewsItem.
 | `id` | `number` | Unique ID |
 | `title` | `string` | - |
 | `url` | `string` | - |
-| `summary` | `string` | Short description |
+| `source` | `string` | Provider |
+| `language` | `string` | Language: `en`, `es`. |
+| `body` | `string` | Short description |
 | `image` | `string` | Representative image URL |
 
 #### `User`
@@ -172,5 +174,22 @@ $ make start
 
 Build and run:
 ```sh
-$ make docker
+$ docker-compose up -d
+```
+
+##### Setup Postgres
+
+Log to postgres container:
+```sh
+$ docker exec -it newsapi_db_1 /bin/bash
+```
+
+Log to postgres service:
+```sh
+$ psql -U postgres
+```
+
+Create Database
+```sh
+CREATE DATABASE newsapi;
 ```
