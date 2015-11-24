@@ -50,7 +50,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database, tags []string, providers []string, page int) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags []string, providers []string, categories []string, page int) (*[]NewsItem, error) {
 	var news []NewsItem
 
 	matchClause := []string{"MATCH (new:NewsItem)<-[r:posted]-(p:NewsProvider)"}
@@ -59,8 +59,13 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, page i
 		return fmt.Sprintf("(new:NewsItem)--(:Tag{name: \"%s\"})", strings.TrimSpace(tag))
 	}, tags)...)
 
+	matchClause = append(matchClause, un.MapString(func(category string) string {
+		return fmt.Sprintf("(new:NewsItem)--(:Category{name: \"%s\"})", strings.TrimSpace(category))
+	}, categories)...)
+
 	match := strings.Join(append(matchClause, "(new:NewsItem)"), ", ")
 
+	fmt.Printf(match)
 	where := ""
 	if len(providers) != 0 {
 		names := un.MapString(func(provider string) string {
