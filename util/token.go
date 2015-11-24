@@ -16,7 +16,7 @@ func Token(secretPassword string, claims map[string]interface{}) (string, error)
 
 	// Set some claims
 	token.Claims = claims
-	token.Claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
+	token.Claims["exp"] = time.Now().Add(time.Hour * 3).Unix()
 
 	// Sign and get the complete encoded token as a string
 	return token.SignedString([]byte(secretPassword))
