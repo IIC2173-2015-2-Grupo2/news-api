@@ -18,6 +18,7 @@ type NewsItem struct {
 	URL     string `json:"url"`
 	BODY string `json:"body"`
 	IMAGE   string `json:"image"`
+	SOURCE   string `json:"source"`
 }
 
 // ---------------------------------------------------------------------------
@@ -30,7 +31,7 @@ GetNewsItem returns the new with that id
 func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	var news []NewsItem
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:NewsItem)-[r:posted]-(k:NewsProvider)
+		Statement: `MATCH (new:NewsItem)<-[r:posted]-(k:NewsProvider)
 								WHERE ID(new) = {id}
 								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, k.name as source`,
 		Parameters: neoism.Props{"id": id},
@@ -52,13 +53,13 @@ GetNewsItems returns collection of news
 func GetNewsItems(db *neoism.Database, tags []string, providers []string, page int) (*[]NewsItem, error) {
 	var news []NewsItem
 
-	matchClause := []string{"MATCH (new:NewsItem)"}
+	matchClause := []string{"MATCH (new:NewsItem)<-[r:posted]-(p:NewsProvider)"}
 
 	matchClause = append(matchClause, un.MapString(func(tag string) string {
 		return fmt.Sprintf("(new:NewsItem)--(:Tag{name: \"%s\"})", strings.TrimSpace(tag))
 	}, tags)...)
 
-	match := strings.Join(append(matchClause, "(new:NewsItem)-[r:posted]-(p:NewsProvider)"), ", ")
+	match := strings.Join(append(matchClause, "(new:NewsItem)"), ", ")
 
 	where := ""
 	if len(providers) != 0 {
