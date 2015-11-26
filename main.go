@@ -40,8 +40,8 @@ func main() {
 
 	// Postgres Database setup
 	var pgdb *gorm.DB
-	// if connected, err := gorm.Open("postgres", "user=postgres dbname=newsapi sslmode=disable host=db"); err != nil {
-		if connected, err := gorm.Open("postgres", "user=newsapi dbname=newsapi sslmode=disable"); err != nil {
+	if connected, err := gorm.Open("postgres", "user=postgres dbname=newsapi sslmode=disable host=db"); err != nil {
+		// if connected, err := gorm.Open("postgres", "user=newsapi dbname=newsapi sslmode=disable"); err != nil {
 		log.Fatal(err)
 	} else {
 		pgdb = &connected

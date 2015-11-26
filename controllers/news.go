@@ -22,7 +22,7 @@ func (n *NewsController) Index(c *gin.Context) {
 	if page, err := strconv.Atoi(c.DefaultQuery("page", "0")); err != nil || page < 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid page number"})
 
-	} else if news, err := models.GetNewsItems(n.DB, nil, nil,nil, page); err != nil {
+	} else if news, err := models.GetNewsItems(n.DB, nil, nil,nil,nil,nil, page); err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
 
 	} else {
@@ -38,10 +38,12 @@ func (n *NewsController) Search(c *gin.Context) {
 	tags := c.Request.URL.Query()["tags"]
 	providers := c.Request.URL.Query()["providers"]
 	categories := c.Request.URL.Query()["categories"]
+	locations := c.Request.URL.Query()["locations"]
+	people := c.Request.URL.Query()["people"]
 	if page, err := strconv.Atoi(c.DefaultQuery("page", "0")); err != nil || page < 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid page number"})
 
-	} else if news, err := models.GetNewsItems(n.DB, tags, providers, categories, page); err != nil {
+	} else if news, err := models.GetNewsItems(n.DB, tags, providers, categories, people, locations, page); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	} else {
