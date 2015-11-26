@@ -55,7 +55,7 @@ GetNewsItems returns collection of news
 func GetNewsItems(db *neoism.Database, tags []string, providers []string, categories []string, people []string, locations []string, page int) (*[]NewsItem, error) {
 	var news []NewsItem
 
-	matchClause := []string{"MATCH (new:NewsItem)<-[r:posted]-(p:NewsProvider), (new:NewsItem)<-[r:posted]-(l:Location)"}
+	matchClause := []string{"MATCH (new:NewsItem)<-[r:posted]-(p:NewsProvider), (new:NewsItem)<-[h:contains]-(l:Location)"}
 
 	matchClause = append(matchClause, un.MapString(func(tag string) string {
 		return fmt.Sprintf("(new:NewsItem)--(:Tag{name: \"%s\"})", strings.TrimSpace(tag))
