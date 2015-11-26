@@ -40,8 +40,8 @@ func main() {
 
 	// Postgres Database setup
 	var pgdb *gorm.DB
-	if connected, err := gorm.Open("postgres", "user=postgres dbname=newsapi sslmode=disable host=db"); err != nil {
-		// if connected, err := gorm.Open("postgres", "user=newsapi dbname=newsapi sslmode=disable"); err != nil {
+	// if connected, err := gorm.Open("postgres", "user=postgres dbname=newsapi sslmode=disable host=db"); err != nil {
+		if connected, err := gorm.Open("postgres", "user=newsapi dbname=newsapi sslmode=disable"); err != nil {
 		log.Fatal(err)
 	} else {
 		pgdb = &connected
@@ -116,6 +116,9 @@ func apiv1(router *gin.Engine, db *neoism.Database, pgdb *gorm.DB, analytics *ga
 	pgBaseController := controllers.PgBase{DB: pgdb, Base: base}
 
 	newsController := controllers.NewsController{Neo4jBase: neo4jBaseController}
+	peopleController := controllers.PeopleController{Neo4jBase: neo4jBaseController}
+	categoriesController := controllers.CategoriesController{Neo4jBase: neo4jBaseController}
+	locationsController := controllers.LocationsController{Neo4jBase: neo4jBaseController}
 	tagsController := controllers.TagsController{Neo4jBase: neo4jBaseController}
 	newsProvidersController := controllers.NewsProvidersController{Neo4jBase: neo4jBaseController}
 	usersController := controllers.UsersController{PgBase: pgBaseController}
@@ -146,6 +149,9 @@ func apiv1(router *gin.Engine, db *neoism.Database, pgdb *gorm.DB, analytics *ga
 	}
 
 	private.GET("/tags", tagsController.Index)
+	private.GET("/people", peopleController.Index)
+	private.GET("/locations", locationsController.Index)
+	private.GET("/categories", categoriesController.Index)
 	private.GET("/news_providers", newsProvidersController.Index)
 	private.GET("/news", newsController.Index)
 	private.GET("/search", newsController.Search)
