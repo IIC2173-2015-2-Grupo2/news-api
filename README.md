@@ -41,9 +41,36 @@ Describes a Tag. News have many tags.
 | `id` | `number` | Unique ID |
 | `name` | `string` | Tag name |
 
+#### `Category`
+
+Describes a Category. News belongs to one category.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | Category name |
+
+#### `Person`
+
+Describes a Person. News are related with many people.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | Person name |
+
+#### `Location`
+
+Describes a Location. News belongs to one location.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Unique ID |
+| `name` | `string` | Location name |
+
 #### `NewsProvider`
 
-Describes `NewsItem` source
+Describes `NewsItem` source. NewsItem has one NewsProvider
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -111,10 +138,13 @@ Search `NewsItem` with:
 | `page` | `uint` | `0` | Page number |
 | `tags` | `[]string` | | Filter by `Tag`'s name |
 | `providers` | `[]string` | | Filter by `NewsProvider`'s name|
+| `locations` | `[]string` | | Search news in this locations|
+| `people` | `[]string` | | Search news related with|
+| `categories` | `[]string` | | Filter by Categories name|
 
 ##### Example
 ```sh
-.../api/v1/private/news?tags=sports&tags=national&providers=newschannel
+.../api/v1/private/news?tags=love&tags=kill&providers=cnn&providers=emol&people=name&categories=national
 ```
 #### `GET` `api/v1/private/tags`
 
@@ -123,6 +153,18 @@ Returns a `Tag`'s list
 #### `GET` `api/v1/private/news_providers`
 
 Returns a `NewsProvider`'s list
+
+#### `GET` `api/v1/private/categories`
+
+Returns a `Category`'s list
+
+#### `GET` `api/v1/private/people`
+
+Returns a `Person`'s list
+
+#### `GET` `api/v1/private/locations`
+
+Returns a `Location`'s list
 
 
 ## Development
