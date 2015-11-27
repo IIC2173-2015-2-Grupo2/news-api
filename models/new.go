@@ -104,7 +104,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(company))
 		}, companies)
 
-		where = fmt.Sprintf("WHERE l.name in [%s]", strings.Join(names, ", "))
+		where = fmt.Sprintf("WHERE co.name in [%s]", strings.Join(names, ", "))
 		query = query + ", co.name as company"
 
 	}
