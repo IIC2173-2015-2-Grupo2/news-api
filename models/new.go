@@ -21,6 +21,7 @@ type NewsItem struct {
 	Language string `json:"language"`
 	Body     string `json:"body"`
 	Image    string `json:"image"`
+	Company  string `json:"company"`
 }
 
 // ---------------------------------------------------------------------------
@@ -52,7 +53,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 /*
 GetNewsItems returns collection of news
 */
-func GetNewsItems(db *neoism.Database, tags []string, providers []string, categories []string, people []string, locations []string, page int) (*[]NewsItem, error) {
+func GetNewsItems(db *neoism.Database, tags []string, providers []string, categories []string, people []string, locations []string, companies []string page int) (*[]NewsItem, error) {
 	var news []NewsItem
 
 	matchClause := []string{"MATCH (new:NewsItem)<-[r:posted]-(p:NewsProvider)"}
@@ -93,6 +94,18 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 
 		where = fmt.Sprintf("WHERE l.name in [%s]", strings.Join(names, ", "))
 		query = query + ", l.name as location"
+
+	}
+
+	if len(companies) != 0 {
+		match = match + ", (new:NewsItem)--(co:Company)"
+
+		names := un.MapString(func(company string) string {
+			return fmt.Sprintf("\"%s\"", strings.TrimSpace(company))
+		}, companies)
+
+		where = fmt.Sprintf("WHERE l.name in [%s]", strings.Join(names, ", "))
+		query = query + ", co.name as company"
 
 	}
 
