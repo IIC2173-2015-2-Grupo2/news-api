@@ -120,6 +120,7 @@ func apiv1(router *gin.Engine, db *neoism.Database, pgdb *gorm.DB, analytics *ga
 	categoriesController := controllers.CategoriesController{Neo4jBase: neo4jBaseController}
 	locationsController := controllers.LocationsController{Neo4jBase: neo4jBaseController}
 	tagsController := controllers.TagsController{Neo4jBase: neo4jBaseController}
+	companiesController := controllers.CompaniesController{Neo4jBase: neo4jBaseController}
 	newsProvidersController := controllers.NewsProvidersController{Neo4jBase: neo4jBaseController}
 	usersController := controllers.UsersController{PgBase: pgBaseController}
 	sessionController := controllers.SessionController{PgBase: pgBaseController, SecretHash: secret}
@@ -152,12 +153,14 @@ func apiv1(router *gin.Engine, db *neoism.Database, pgdb *gorm.DB, analytics *ga
 	private.GET("/people", peopleController.Index)
 	private.GET("/locations", locationsController.Index)
 	private.GET("/categories", categoriesController.Index)
+	private.GET("/companies", companiesController.Index)
 	private.GET("/news_providers", newsProvidersController.Index)
 	private.GET("/news", newsController.Index)
 	private.GET("/search", newsController.Search)
 	private.GET("/news/:id", newsController.Show)
 	private.GET("/users", usersController.Index)
 	private.GET("/users/:id", usersController.Show)
+
 	// --------------------------------------------------------------------------
 
 }
