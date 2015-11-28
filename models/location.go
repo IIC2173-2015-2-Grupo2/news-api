@@ -1,15 +1,15 @@
 package models
 
 import (
-  "github.com/jmcvetta/neoism"
+	"github.com/jmcvetta/neoism"
 )
 
 /*
 Location model
 */
 type Location struct {
-  ID   int64  `json:"id"`
-  Name string `json:"name"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
 }
 
 // ---------------------------------------------------------------------------
@@ -18,13 +18,13 @@ type Location struct {
 GetLocations returns collection of news
 */
 func GetLocations(db *neoism.Database) (*[]Location, error) {
-  var locations []Location
-  if err := db.Cypher(&neoism.CypherQuery{
-    Statement: `MATCH (location:Location)
+	var locations []Location
+	if err := db.Cypher(&neoism.CypherQuery{
+		Statement: `MATCH (location:Location)
                 RETURN ID(location) as id, location.name as name`,
-    Result: &locations,
-  }); err != nil {
-    return nil, err
-  }
-  return &locations, nil
+		Result: &locations,
+	}); err != nil {
+		return nil, err
+	}
+	return &locations, nil
 }
