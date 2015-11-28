@@ -22,6 +22,7 @@ type NewsItem struct {
 	Body     string `json:"body"`
 	Image    string `json:"image"`
 	Company  string `json:"company"`
+	Person   string `json:"person"`
 }
 
 // ---------------------------------------------------------------------------
@@ -66,9 +67,6 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 		return fmt.Sprintf("(new:NewsItem)--(:Category{name: \"%s\"})", strings.TrimSpace(category))
 	}, categories)...)
 
-	matchClause = append(matchClause, un.MapString(func(person string) string {
-		return fmt.Sprintf("(new:NewsItem)--(:Person{name: \"%s\"})", strings.TrimSpace(person))
-	}, people)...)
 	// match := strings.Join(append(matchClause, "(new:NewsItem)--(p:NewsProvider)"), ", ")
 	// match := strings.Join(matchClause, ", ")
 
@@ -103,9 +101,19 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 		names := un.MapString(func(company string) string {
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(company))
 		}, companies)
-
+	
 		where = fmt.Sprintf("WHERE co.name in [%s]", strings.Join(names, ", "))
 		query = query + ", co.name as company"
+	}
+
+	if len(people) != 0 {
+		match = match + ", (new:NewsItem)--(person:Person)"
+		names := un.MapString(func(person string) string {
+			return fmt.Sprintf("\"%s\"", strings.TrimSpace(person))
+		}, people)
+
+		where = fmt.Sprintf("WHERE person.name in [%s]", strings.Join(names, ", "))
+		query = query + ", person.name as person"
 
 	}
 
