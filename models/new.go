@@ -37,7 +37,7 @@ func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (new:NewsItem)<-[r:posted]-(k:NewsProvider)
 								WHERE ID(new) = {id}
-								RETURN ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, new.language as language, k.name as source`,
+								RETURN DISTINCT ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, new.language as language, k.name as source`,
 		Parameters: neoism.Props{"id": id},
 		Result:     &news,
 	}); err != nil {
@@ -73,7 +73,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 	match := strings.Join(append(matchClause, "(new:NewsItem)"), ", ")
 
 	fmt.Printf(match)
-	query := "RETURN ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body,new.language as language, p.name as source"
+	query := "RETURN DISTINCT ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body,new.language as language, p.name as source"
 	where := ""
 	if len(providers) != 0 {
 		names := un.MapString(func(provider string) string {

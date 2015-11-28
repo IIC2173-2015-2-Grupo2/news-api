@@ -21,7 +21,7 @@ func GetCompanies(db *neoism.Database) (*[]Company, error) {
   var companies []Company
   if err := db.Cypher(&neoism.CypherQuery{
     Statement: `MATCH (company:Company)
-                RETURN ID(company) as id, company.name as name`,
+                RETURN DISTINCT ID(company) as id, company.name as name`,
     Result: &companies,
   }); err != nil {
     return nil, err

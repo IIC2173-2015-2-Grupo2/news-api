@@ -21,7 +21,7 @@ func GetNewsProviders(db *neoism.Database) (*[]NewsProvider, error) {
 	var newsproviders []NewsProvider
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (newsprovider:NewsProvider)
-                RETURN ID(newsprovider) as id, newsprovider.name as name`,
+                RETURN DISTINCT ID(newsprovider) as id, newsprovider.name as name`,
 		Result: &newsproviders,
 	}); err != nil {
 		return nil, err

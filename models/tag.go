@@ -21,7 +21,7 @@ func GetTags(db *neoism.Database) (*[]Tag, error) {
 	var tags []Tag
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: `MATCH (tag:Tag)
-                RETURN ID(tag) as id, tag.name as name`,
+                RETURN DISTINCT ID(tag) as id, tag.name as name`,
 		Result: &tags,
 	}); err != nil {
 		return nil, err

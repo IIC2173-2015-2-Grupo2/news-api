@@ -21,7 +21,7 @@ func GetLocations(db *neoism.Database) (*[]Location, error) {
   var locations []Location
   if err := db.Cypher(&neoism.CypherQuery{
     Statement: `MATCH (location:Location)
-                RETURN ID(location) as id, location.name as name`,
+                RETURN DISTINCT ID(location) as id, location.name as name`,
     Result: &locations,
   }); err != nil {
     return nil, err

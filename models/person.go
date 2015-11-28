@@ -21,7 +21,7 @@ func GetPeople(db *neoism.Database) (*[]Person, error) {
   var people []Person
   if err := db.Cypher(&neoism.CypherQuery{
     Statement: `MATCH (person:Person)
-                RETURN ID(person) as id, person.name as name`,
+                RETURN DISTINCT ID(person) as id, person.name as name`,
     Result: &people,
   }); err != nil {
     return nil, err
