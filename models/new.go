@@ -35,7 +35,7 @@ GetNewsItem returns the new with that id
 func GetNewsItem(db *neoism.Database, id int) (*NewsItem, error) {
 	var news []NewsItem
 	if err := db.Cypher(&neoism.CypherQuery{
-		Statement: `MATCH (new:NewsItem)<-[r:posted]-(k:NewsProvider)
+		Statement: `MATCH (new:NewsItem)<-[r]-(k:NewsProvider)
 								WHERE ID(new) = {id}
 								RETURN DISTINCT ID(new) as id, new.title as title, new.url as url,new.image as image, new.body as body, new.language as language, k.name as source`,
 		Parameters: neoism.Props{"id": id},
@@ -57,7 +57,7 @@ GetNewsItems returns collection of news
 func GetNewsItems(db *neoism.Database, tags []string, providers []string, categories []string, people []string, locations []string, companies []string, page int) (*[]NewsItem, error) {
 	var news []NewsItem
 
-	matchClause := []string{"MATCH (new:NewsItem)<-[r:posted]-(p:NewsProvider)"}
+	matchClause := []string{"MATCH (new:NewsItem)<-[r]-(p:NewsProvider)"}
 
 	matchClause = append(matchClause, un.MapString(func(tag string) string {
 		return fmt.Sprintf("(new:NewsItem)--(:Tag{name: \"%s\"})", strings.TrimSpace(tag))
@@ -72,7 +72,6 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 
 	match := strings.Join(append(matchClause, "(new:NewsItem)"), ", ")
 
-	fmt.Printf(match)
 	query := "RETURN DISTINCT ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body,new.language as language, p.name as source"
 	where := ""
 	if len(providers) != 0 {
@@ -84,7 +83,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 	}
 
 	if len(locations) != 0 {
-		match = match + ", (new:NewsItem)<-[h:contains]-(l:Location)"
+		match = match + ", (new:NewsItem)<-[h]-(l:Location)"
 
 		names := un.MapString(func(location string) string {
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(location))
@@ -119,6 +118,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 
 	paging := fmt.Sprintf("SKIP %d LIMIT %d", page*itemsPerPage, itemsPerPage)
 
+	// fmt.Printf("%s %s %s %s", match, where, query, paging)
 	if err := db.Cypher(&neoism.CypherQuery{
 		Statement: fmt.Sprintf("%s %s %s %s", match, where, query, paging),
 		Result:    &news,
