@@ -1,15 +1,15 @@
 package models
 
 import (
-  "github.com/jmcvetta/neoism"
+	"github.com/jmcvetta/neoism"
 )
 
 /*
 Person model
 */
 type Person struct {
-  ID   int64  `json:"id"`
-  Name string `json:"name"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
 }
 
 // ---------------------------------------------------------------------------
@@ -18,13 +18,14 @@ type Person struct {
 GetPeople returns collection of news
 */
 func GetPeople(db *neoism.Database) (*[]Person, error) {
-  var people []Person
-  if err := db.Cypher(&neoism.CypherQuery{
-    Statement: `MATCH (person:Person)
+
+	var people []Person
+	if err := db.Cypher(&neoism.CypherQuery{
+		Statement: `MATCH (person:Person)
                 RETURN DISTINCT ID(person) as id, person.name as name`,
-    Result: &people,
-  }); err != nil {
-    return nil, err
-  }
-  return &people, nil
+		Result: &people,
+	}); err != nil {
+		return nil, err
+	}
+	return &people, nil
 }
