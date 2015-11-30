@@ -73,13 +73,14 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 	match := strings.Join(append(matchClause, "(new:NewsItem)"), ", ")
 
 	query := "RETURN DISTINCT ID(new) as id, new.title as title, new.url as url, new.image as image, new.body as body,new.language as language, p.name as source"
-	where := ""
+	where := "WHERE NOT new.url = \"\""
 	if len(providers) != 0 {
 		names := un.MapString(func(provider string) string {
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(provider))
 		}, providers)
 
-		where = fmt.Sprintf("WHERE p.name in [%s]", strings.Join(names, ", "))
+
+		where = where + fmt.Sprintf(" AND p.name in [%s]", strings.Join(names, ", "))
 	}
 
 	if len(locations) != 0 {
@@ -89,7 +90,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(location))
 		}, locations)
 
-		where = fmt.Sprintf("WHERE l.name in [%s]", strings.Join(names, ", "))
+		where = where + fmt.Sprintf(" AND l.name in [%s]", strings.Join(names, ", "))
 		query = query + ", l.name as location"
 
 	}
@@ -101,7 +102,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(company))
 		}, companies)
 
-		where = fmt.Sprintf("WHERE co.name in [%s]", strings.Join(names, ", "))
+		where = where + fmt.Sprintf(" AND co.name in [%s]", strings.Join(names, ", "))
 		query = query + ", co.name as company"
 	}
 
@@ -111,7 +112,7 @@ func GetNewsItems(db *neoism.Database, tags []string, providers []string, catego
 			return fmt.Sprintf("\"%s\"", strings.TrimSpace(person))
 		}, people)
 
-		where = fmt.Sprintf("WHERE person.name in [%s]", strings.Join(names, ", "))
+		where = where + fmt.Sprintf(" AND person.name in [%s]", strings.Join(names, ", "))
 		query = query + ", person.name as person"
 
 	}
